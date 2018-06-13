@@ -78,3 +78,26 @@ you do not, and optimizes for the *discovery loop*:
   replay output are plain text, made for humans and pipes alike.
 
 ---
+
+## The two instruments
+
+| Instrument | Language | Role on the bench | Subcommands |
+|------------|----------|-------------------|-------------|
+| **`portcap`** | Go | The probe &amp; recorder. Sits in front of a TCP service as a transparent proxy and records both directions; also normalizes loose logs and summarizes traces. | `capture`, `normalize`, `stats`, `version` |
+| **`portsmith-replay`** | Rust | The scope &amp; signal generator. Reads a trace, infers the protocol's structure, pretty-prints it, and replays captured requests against a live target. | `infer`, `replay`, `cat`, `version` |
+
+Both tools report version `1.0.0`.
+
+---
+
+## Install &amp; build
+
+Prerequisites: **Go 1.24** and a **stable Rust toolchain** (`cargo`).
+
+```sh
+make build        # builds the Go binary (bin/portcap) and the Rust release binary
+make test         # runs `go test ./...` and `cargo test`
+```
+
+Prefer to drive each toolchain yourself:
+
