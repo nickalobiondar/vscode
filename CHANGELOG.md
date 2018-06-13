@@ -28,3 +28,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - deterministic `infer` output for line-based protocols
 - per-direction byte accounting in replay reports
+
+## [0.5.0] - 2024-04-19
+
+### Added
+- Go capture proxy with per-connection trace files
+- RESP/Redis normalization rules
