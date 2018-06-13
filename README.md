@@ -56,3 +56,25 @@ documented text format.
 - [Limitations](#limitations)
 - [Troubleshooting](#troubleshooting)
 - [Repository layout](#repository-layout)
+- [Roadmap](#roadmap)
+- [License](#license)
+
+---
+
+## Why portsmith
+
+Most protocol tooling assumes you already know the protocol. portsmith assumes
+you do not, and optimizes for the *discovery loop*:
+
+- **Two languages, deliberately.** Capture and normalization are I/O-and-goroutine
+  heavy — Go's home turf (`portcap`). Inference and replay want a tight,
+  allocation-conscious core with strong pattern matching — Rust
+  (`portsmith-replay`). Neither reaches for a third-party crate or module.
+- **One contract between them.** The `*.trace` file is the *only* coupling. Both
+  sides implement the same v1 grammar against their standard libraries, including
+  a hand-rolled standard-base64 codec on the Rust side.
+- **Everything is inspectable.** Traces are UTF-8 text; payloads are base64 so a
+  single grep-able line survives binary data and embedded NULs. Schema reports and
+  replay output are plain text, made for humans and pipes alike.
+
+---
