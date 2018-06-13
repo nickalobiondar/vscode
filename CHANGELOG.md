@@ -22,3 +22,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Verified
 - `make test` green on both toolchains (go test -race, cargo test).
 - gofmt / clippy / rustfmt clean.
+
+## [0.6.0] - 2025-06-27
+
+### Added
+- deterministic `infer` output for line-based protocols
+- per-direction byte accounting in replay reports
