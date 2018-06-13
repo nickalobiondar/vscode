@@ -101,3 +101,25 @@ make test         # runs `go test ./...` and `cargo test`
 
 Prefer to drive each toolchain yourself:
 
+```sh
+cd go   && go build -o ../bin/portcap ./cmd/portcap
+cd rust && cargo build --release        # target/release/portsmith-replay
+```
+
+Other Makefile targets that mirror CI:
+
+```sh
+make fmt     # go fmt ./...            + cargo fmt
+make vet     # go vet ./...            + cargo check
+make demo    # regenerate samples/redis.trace, then infer it
+make clean   # remove bin/ and cargo artifacts
+```
+
+CI (`.github/workflows/ci.yml`) runs three jobs: **Go** (gofmt check, `go vet`,
+build, `go test -race`), **Rust** (`cargo fmt --check`, `clippy -D warnings`,
+release build, `cargo test`), and a **cross-language interop** job that
+normalizes a log with Go and infers it with Rust — proving the format contract
+holds across both implementations.
+
+> Transcripts below use bare `portcap` / `portsmith-replay` names. Substitute
+> `bin/portcap` and `target/release/portsmith-replay`, or add them to `PATH`.
