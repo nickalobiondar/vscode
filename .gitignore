@@ -1,0 +1,23 @@
+# Rust
+/rust/target/
+**/*.rs.bk
+Cargo.lock
+
+# Go
+/go/bin/
+*.exe
+*.test
+*.out
+
+# Build output
+/bin/
+/dist/
+
+# Generated capture output (keep curated samples/*.trace)
+/cap.trace
+*.capture
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
