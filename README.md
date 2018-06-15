@@ -123,3 +123,26 @@ holds across both implementations.
 
 > Transcripts below use bare `portcap` / `portsmith-replay` names. Substitute
 > `bin/portcap` and `target/release/portsmith-replay`, or add them to `PATH`.
+
+---
+
+## Bench session (annotated transcript)
+
+A complete loop on the bundled Redis sample — no Redis-specific code anywhere in
+portsmith.
+
+**1 &#183; Normalize a raw session log into a canonical trace.** The `redis.log`
+uses `>` for client lines and `<` for server lines; consecutive same-direction
+lines are coalesced into one record and timestamps are synthesized from
+`-start` stepping by `-step`.
+
+```console
+$ portcap normalize -in samples/redis.log -proto redis -session a1b2c3 \
+      -start 1700000000000000000 -step 50000000 -out samples/redis.trace
+# normalized 6 records
+```
+
+**2 &#183; Read the trace back as escaped, human-readable text** (`cat` shows the
+nanosecond timestamp, direction arrow, session, proto, and a control-escaped
+preview of up to 64 payload bytes):
+
