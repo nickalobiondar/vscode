@@ -259,3 +259,26 @@ detect truncation or corruption *before* allocating. Both decoders reject a
 record when it does not split into exactly 7 fields, the version is not `V1`,
 `ts_nanos` is not a valid int64, `dir` is neither `>` nor `<`, `len` is not a
 valid non-negative integer, the base64 is invalid, or **the decoded length does
+not match `len`**.
+
+Other rules both implementations honor: line separator is `\n` (a trailing `\r`
+is tolerated); blank/`#`-comment lines are ignored; the magic header is a comment
+(recommended, not required); base64 is *standard* (`+`/`/`, `=` padding), with the
+Rust side shipping its own known-answer-tested codec so it needs no crates; and
+future revisions bump the version tag (`V2`, …) rather than being guessed at.
+
+---
+
+## Architecture
+
+The `*.trace` file is the waist of the hourglass: Go writes it, Rust reads it,
+and nothing else crosses the boundary.
+
+```mermaid
+flowchart LR
+    client([Client]) -->|TCP| proxy
+    subgraph GO["portcap · Go"]
+        proxy[capture proxy] --> tw[trace.Writer]
+        norm[normalize] --> tw
+        stats[stats]
+    end
