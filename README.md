@@ -327,3 +327,26 @@ records charted into a schema, requests driven back onto the wire:
 ### `portsmith-replay` (Rust)
 
 | Command | Purpose | Key flags |
+|---------|---------|-----------|
+| `infer` | Heuristically discover the schema of each `(proto, direction)` group. | `-in` (default `-` = stdin) |
+| `replay` | Send captured **requests** to a target; collect responses. | `-target` (**required**), `-timing` (preserve inter-request delays, capped at 2s), `-timeout` (per-read timeout ms, default `200`), `-wait` (max wait for a response ms, default `500`), `-in` (default `-`) |
+| `cat` | Pretty-print a trace with control characters escaped. | `-in` (default `-`) |
+| `version` | Print `portsmith-replay 1.0.0`. | — |
+
+Run any command with `-h` for its flags. Both tools accept `-` (or an omitted
+`-in`) to read from **stdin**, and Go's `-out`/Rust's stdout make them
+pipe-friendly:
+
+```sh
+portcap normalize -in samples/redis.log -proto redis | portsmith-replay infer -in -
+```
+
+---
+
+## Workflows
+
+**A · From a hand-written log to a schema.** Fastest way to sketch a protocol you
+can describe but not yet capture. Write a `> / <` log, normalize it, infer it.
+
+```sh
+portcap normalize -in session.log -proto myproto -out my.trace
