@@ -237,3 +237,25 @@ one record per line:
 #portsmith-trace v1
 V1 1700000000000000000 > a1b2c3 redis 5 UElORwo=
 V1 1700000000050000000 < a1b2c3 redis 6 K1BPTkcK
+```
+
+Each record is seven space-separated fields. Because the payload is base64 it
+contains no spaces, so a decoder splits on the **first six spaces** (`splitn(7)`):
+
+```
+V1   1700000000000000000   >   a1b2c3   redis   5   UElORwo=
+│    │                     │   │        │       │   │
+│    │                     │   │        │       │   └─ payload  base64(raw bytes) → "PING\n"
+│    │                     │   │        │       └───── len      decimal length of the DECODED payload (5)
+│    │                     │   │        └───────────── proto    protocol hint: tcp | http | redis | raw | …
+│    │                     │   └────────────────────── session  opaque id, no spaces
+│    │                     └────────────────────────── dir      ">" request (client→server) | "<" response
+│    └──────────────────────────────────────────────── ts_nanos int64 nanoseconds since the Unix epoch
+└───────────────────────────────────────────────────── version  literal "V1"
+```
+
+The `len` field is redundant with the payload **on purpose** — it lets a reader
+detect truncation or corruption *before* allocating. Both decoders reject a
+record when it does not split into exactly 7 fields, the version is not `V1`,
+`ts_nanos` is not a valid int64, `dir` is neither `>` nor `<`, `len` is not a
+valid non-negative integer, the base64 is invalid, or **the decoded length does
