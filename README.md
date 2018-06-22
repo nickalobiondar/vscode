@@ -305,3 +305,25 @@ flowchart LR
 ## Trace flow
 
 The full pipeline as a workshop schematic — raw log tidied into base64 records,
+records charted into a schema, requests driven back onto the wire:
+
+<p align="center">
+  <img src="docs/assets/trace-flow.svg" alt="portsmith trace flow: a raw redis.log is normalized into base64 trace records, inferred into a schema report, and replayed against a live target in a terminal" width="100%">
+</p>
+
+---
+
+## Command reference
+
+### `portcap` (Go)
+
+| Command | Purpose | Key flags |
+|---------|---------|-----------|
+| `capture` | Transparent TCP proxy; records both directions to a trace. | `-listen` (default `:9000`), `-target` (**required**, `host:port`), `-proto` (default `tcp`), `-out` (default `-` = stdout), `-max` (stop after N connections; `0` = unlimited) |
+| `normalize` | Convert a `> / <` raw session log into a canonical trace. | `-in` (default `-` = stdin), `-proto` (default `raw`), `-session` (default `norm0001`), `-out` (default `-`), `-start` (default: now, unix nanos), `-step` (default `1ms` in nanos) |
+| `stats` | Summarize a trace: records, requests/responses, sessions, bytes, duration, protocol breakdown. | `-in` (default `-`) |
+| `version` | Print `portcap 1.0.0`. | — |
+
+### `portsmith-replay` (Rust)
+
+| Command | Purpose | Key flags |
