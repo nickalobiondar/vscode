@@ -350,3 +350,26 @@ can describe but not yet capture. Write a `> / <` log, normalize it, infer it.
 
 ```sh
 portcap normalize -in session.log -proto myproto -out my.trace
+portsmith-replay infer -in my.trace
+```
+
+**B · From a live service to a replay.** Proxy the real service, capture genuine
+traffic, then replay it against a staging instance.
+
+```sh
+portcap capture -listen :9000 -target prod-box:6379 -proto redis -out cap.trace
+# ...drive a client at localhost:9000, then Ctrl-C...
+portcap stats  -in cap.trace                 # sanity-check what you recorded
+portsmith-replay replay -in cap.trace -target staging-box:6379
+```
+
+**C · Timing-faithful regression.** Preserve the original inter-request gaps
+(capped at 2 seconds per gap) to approximate the live cadence:
+
+```sh
+portsmith-replay replay -in cap.trace -target 127.0.0.1:6379 -timing -wait 1000
+```
+
+**D · Cross-language interop check** (the same one CI runs):
+
+```sh
