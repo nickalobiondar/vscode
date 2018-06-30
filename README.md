@@ -373,3 +373,25 @@ portsmith-replay replay -in cap.trace -target 127.0.0.1:6379 -timing -wait 1000
 **D · Cross-language interop check** (the same one CI runs):
 
 ```sh
+cd go && go run ./cmd/portcap normalize -in ../samples/redis.log \
+    -proto redis -session a1b2c3 -start 1700000000000000000 -step 50000000 \
+    -out ../samples/roundtrip.trace
+cd ../rust && cargo run --quiet -- infer -in ../samples/roundtrip.trace
+```
+
+---
+
+## Use cases
+
+- **Reverse-engineering an undocumented daemon.** Capture a real session, run
+  `infer`, and read off framing (LF/CRLF/none), text-vs-binary, and the
+  verb/method vocabulary before writing any client code.
+- **Regression &amp; smoke tests for line protocols.** Freeze a known-good session
+  as a trace and replay it against each new build.
+- **Load/soak stimulus.** Replay a representative trace to keep a service warm or
+  exercise a code path repeatedly.
+- **Documentation from evidence.** Turn a trace into a `cat` transcript and an
+  `infer` report that describe what the protocol *actually* does.
+- **Teaching &amp; demos.** The HTTP and Redis samples are a self-contained lesson
+  in framing, base64, and request/response structure.
+
