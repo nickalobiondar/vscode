@@ -441,3 +441,25 @@ records in the input are **not** sent — replay drives only the request side.
 
 - **Why base64 payloads?** Payloads are arbitrary bytes — binary protocols,
   embedded NULs, non-UTF-8. Base64 keeps every record on a single ASCII-clean line
+  that survives `grep`, `diff`, and copy-paste.
+- **Why a redundant `len`?** A cheap integrity check and forward-compatible
+  framing: a reader detects truncation before it allocates, and the decoder
+  hard-fails on any mismatch.
+- **Why nanoseconds?** High-resolution ordering and faithful timing replay.
+- **Why two languages?** Capture is a concurrency/I/O problem (the proxy uses a
+  goroutine per direction with a mutex-guarded writer); inference and replay are a
+  parsing/state problem (Rust's exhaustive matching and ownership). Splitting them
+  keeps each half small and idiomatic.
+- **Why no dependencies?** Every line — including the base64 codec — is in-tree
+  and testable, which is the whole point of a tool you use to understand *other*
+  systems. Clippy runs `-D warnings`; the Go build is race-tested in CI.
+
+---
+
+## Comparison
+
+Rough positioning — portsmith is intentionally narrow.
+
+| Capability | **portsmith** | tcpdump / Wireshark | mitmproxy | Custom scripts |
+|---|:--:|:--:|:--:|:--:|
+| Capture live TCP traffic | ✅ app-level proxy | ✅ packet-level | ✅ HTTP(S) focus | ⚠️ you build it |
