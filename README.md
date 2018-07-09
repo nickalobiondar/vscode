@@ -395,3 +395,26 @@ cd ../rust && cargo run --quiet -- infer -in ../samples/roundtrip.trace
 - **Teaching &amp; demos.** The HTTP and Redis samples are a self-contained lesson
   in framing, base64, and request/response structure.
 
+---
+
+## How inference actually works
+
+Inference is heuristic and dependency-free. Records are grouped by
+`(proto, direction)`, and for each group `portsmith-replay` computes:
+
+- **Encoding — text vs binary.** A payload is "printable" when at least 90% of its
+  bytes are printable ASCII (plus tab/CR/LF); empty payloads count as printable. A
+  group is **text** when at least 80% of its samples are printable, else **binary**.
+- **Terminator — CRLF / LF / none.** Votes on how many payloads end in `\r\n`
+  versus a bare `\n`: **CRLF** when CRLF is at least as common as LF and covers at
+  least half the samples, **LF** when LF covers at least half, else **none**.
+- **Length statistics.** `min`, `max`, and `mean` of decoded payload byte lengths.
+- **Leading-token histogram.** The first whitespace-delimited token of each
+  textual payload (e.g. HTTP methods, Redis verbs), capped at 32 bytes so binary
+  noise never becomes a "token". Tokens are sorted by count descending, then name,
+  and the top 8 are shown.
+
+These are signals, not certainties — see [Limitations](#limitations).
+
+---
+
