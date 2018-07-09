@@ -418,3 +418,26 @@ These are signals, not certainties — see [Limitations](#limitations).
 
 ---
 
+## How replay actually works
+
+`replay` groups records by session (preserving first-appearance order) and opens
+**one TCP connection per session**. Within a session it walks records in order
+and, for each **request**, writes the payload, flushes, then reads whatever the
+server returns before moving on — tracking byte counts and a response preview.
+
+The read window is bounded two ways: a per-read socket timeout (`-timeout`,
+default 200 ms) and an overall wait per request (`-wait`, default 500 ms). Reads
+stop early on a short read, EOF, or would-block/timeout. With `-timing`, the
+replayer sleeps the original inter-record gap before each request, capped at 2 s
+so a stale trace cannot stall the run.
+
+Per-request failures (connect/write) are captured as errors in the report rather
+than aborting the run; the process exits non-zero if any occurred. Response
+records in the input are **not** sent — replay drives only the request side.
+
+---
+
+## Design choices
+
+- **Why base64 payloads?** Payloads are arbitrary bytes — binary protocols,
+  embedded NULs, non-UTF-8. Base64 keeps every record on a single ASCII-clean line
