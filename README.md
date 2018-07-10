@@ -463,3 +463,26 @@ Rough positioning — portsmith is intentionally narrow.
 | Capability | **portsmith** | tcpdump / Wireshark | mitmproxy | Custom scripts |
 |---|:--:|:--:|:--:|:--:|
 | Capture live TCP traffic | ✅ app-level proxy | ✅ packet-level | ✅ HTTP(S) focus | ⚠️ you build it |
+| Human-readable, greppable trace | ✅ base64 text | ⚠️ pcap (binary) | ⚠️ flows/pcap | ⚠️ varies |
+| Protocol-agnostic (no dissectors) | ✅ | ⚠️ needs dissector | ❌ HTTP-centric | ⚠️ varies |
+| Heuristic schema inference | ✅ text/binary, framing, tokens | ❌ | ❌ | ❌ |
+| Replay requests to a live target | ✅ with optional timing | ❌ | ⚠️ limited | ⚠️ varies |
+| Zero third-party dependencies | ✅ | ❌ | ❌ | ⚠️ varies |
+| Scope | line-oriented req/resp | all packets | web traffic | anything |
+
+If you need TLS interception, packet-level analysis, or rich dissectors, reach
+for the specialized tools above. If you need to *understand and re-drive* a
+line-oriented TCP protocol with something you can read end-to-end, that is
+portsmith.
+
+---
+
+## Limitations
+
+Being honest about the edges of the v1 toolchain:
+
+- **Line/request-response oriented.** Normalization and inference assume text with
+  framing discernible from terminators. Streaming, multiplexed, or length-prefixed
+  binary protocols infer as `binary` with `terminator: none` and limited tokens.
+- **Inference is heuristic.** The 90%/80% printable thresholds, terminator voting,
+  and leading-token extraction describe a corpus; they do not prove a grammar.
