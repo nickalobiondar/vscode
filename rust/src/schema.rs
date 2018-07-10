@@ -19,3 +19,16 @@ use crate::trace::{Direction, Record};
 pub enum Encoding {
     Text,
     Binary,
+}
+
+impl std::fmt::Display for Encoding {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Encoding::Text => write!(f, "text"),
+            Encoding::Binary => write!(f, "binary"),
+        }
+    }
+}
+
+/// Inferred schema for one (proto, direction) group.
+#[derive(Debug, Clone)]
