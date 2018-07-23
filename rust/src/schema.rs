@@ -32,3 +32,16 @@ impl std::fmt::Display for Encoding {
 
 /// Inferred schema for one (proto, direction) group.
 #[derive(Debug, Clone)]
+pub struct GroupSchema {
+    pub proto: String,
+    pub dir: Direction,
+    pub samples: usize,
+    pub encoding: Encoding,
+    pub terminator: String,
+    pub min_len: usize,
+    pub max_len: usize,
+    pub mean_len: f64,
+    /// Leading token -> count, sorted by count descending in `top_tokens`.
+    pub top_tokens: Vec<(String, usize)>,
+}
+
