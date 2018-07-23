@@ -71,3 +71,17 @@ fn dir_key(d: Direction) -> u8 {
     match d {
         Direction::Request => b'>',
         Direction::Response => b'<',
+    }
+}
+
+fn key_dir(k: u8) -> Direction {
+    if k == b'<' {
+        Direction::Response
+    } else {
+        Direction::Request
+    }
+}
+
+fn infer_group(proto: &str, dir: Direction, recs: &[&Record]) -> GroupSchema {
+    let samples = recs.len();
+    let mut printable = 0usize;
