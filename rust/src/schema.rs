@@ -45,3 +45,16 @@ pub struct GroupSchema {
     pub top_tokens: Vec<(String, usize)>,
 }
 
+/// Full inferred schema across all groups.
+#[derive(Debug, Clone, Default)]
+pub struct Schema {
+    pub groups: Vec<GroupSchema>,
+}
+
+/// Infer a schema from records.
+pub fn infer(records: &[Record]) -> Schema {
+    // Group by (proto, dir).
+    let mut groups: BTreeMap<(String, u8), Vec<&Record>> = BTreeMap::new();
+    for r in records {
+        let key = (r.proto.clone(), dir_key(r.dir));
+        groups.entry(key).or_default().push(r);
