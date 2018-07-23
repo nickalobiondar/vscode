@@ -85,3 +85,16 @@ fn key_dir(k: u8) -> Direction {
 fn infer_group(proto: &str, dir: Direction, recs: &[&Record]) -> GroupSchema {
     let samples = recs.len();
     let mut printable = 0usize;
+    let mut total_bytes = 0usize;
+    let mut min_len = usize::MAX;
+    let mut max_len = 0usize;
+    let mut crlf = 0usize;
+    let mut lf = 0usize;
+    let mut token_counts: BTreeMap<String, usize> = BTreeMap::new();
+
+    for r in recs {
+        let p = &r.payload;
+        total_bytes += p.len();
+        min_len = min_len.min(p.len());
+        max_len = max_len.max(p.len());
+
