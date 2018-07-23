@@ -58,3 +58,16 @@ pub fn infer(records: &[Record]) -> Schema {
     for r in records {
         let key = (r.proto.clone(), dir_key(r.dir));
         groups.entry(key).or_default().push(r);
+    }
+
+    let mut schema = Schema::default();
+    for ((proto, dk), recs) in groups {
+        schema.groups.push(infer_group(&proto, key_dir(dk), &recs));
+    }
+    schema
+}
+
+fn dir_key(d: Direction) -> u8 {
+    match d {
+        Direction::Request => b'>',
+        Direction::Response => b'<',
