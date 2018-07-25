@@ -138,3 +138,16 @@ fn infer_group(proto: &str, dir: Direction, recs: &[&Record]) -> GroupSchema {
     let mut top_tokens: Vec<(String, usize)> = token_counts.into_iter().collect();
     top_tokens.sort_by(|a, b| b.1.cmp(&a.1).then(a.0.cmp(&b.0)));
     top_tokens.truncate(8);
+
+    GroupSchema {
+        proto: proto.to_string(),
+        dir,
+        samples,
+        encoding,
+        terminator,
+        min_len,
+        max_len,
+        mean_len,
+        top_tokens,
+    }
+}
