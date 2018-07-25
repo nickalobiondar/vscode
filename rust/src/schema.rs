@@ -111,3 +111,16 @@ fn infer_group(proto: &str, dir: Direction, recs: &[&Record]) -> GroupSchema {
 
         if let Some(tok) = leading_token(p) {
             *token_counts.entry(tok).or_insert(0) += 1;
+        }
+    }
+
+    if min_len == usize::MAX {
+        min_len = 0;
+    }
+    let encoding = if samples > 0 && printable * 100 >= samples * 80 {
+        Encoding::Text
+    } else {
+        Encoding::Binary
+    };
+    let terminator = if crlf >= lf && crlf * 2 >= samples {
+        "CRLF".to_string()
