@@ -98,3 +98,16 @@ fn infer_group(proto: &str, dir: Direction, recs: &[&Record]) -> GroupSchema {
         min_len = min_len.min(p.len());
         max_len = max_len.max(p.len());
 
+        let printable_ct = p.iter().filter(|&&b| is_printable(b)).count();
+        if p.is_empty() || printable_ct * 100 >= p.len() * 90 {
+            printable += 1;
+        }
+
+        if p.ends_with(b"\r\n") {
+            crlf += 1;
+        } else if p.ends_with(b"\n") {
+            lf += 1;
+        }
+
+        if let Some(tok) = leading_token(p) {
+            *token_counts.entry(tok).or_insert(0) += 1;
