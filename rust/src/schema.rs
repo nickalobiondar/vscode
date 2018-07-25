@@ -124,3 +124,17 @@ fn infer_group(proto: &str, dir: Direction, recs: &[&Record]) -> GroupSchema {
     };
     let terminator = if crlf >= lf && crlf * 2 >= samples {
         "CRLF".to_string()
+    } else if lf * 2 >= samples {
+        "LF".to_string()
+    } else {
+        "none".to_string()
+    };
+    let mean_len = if samples > 0 {
+        total_bytes as f64 / samples as f64
+    } else {
+        0.0
+    };
+
+    let mut top_tokens: Vec<(String, usize)> = token_counts.into_iter().collect();
+    top_tokens.sort_by(|a, b| b.1.cmp(&a.1).then(a.0.cmp(&b.0)));
+    top_tokens.truncate(8);
