@@ -164,3 +164,16 @@ fn leading_token(payload: &[u8]) -> Option<String> {
         .unwrap_or(payload.len());
     if end == 0 {
         return None;
+    }
+    let slice = &payload[..end];
+    if slice.iter().all(|&b| is_printable(b) && b != b' ') {
+        // Cap token length so binary noise never becomes a "token".
+        if slice.len() <= 32 {
+            return Some(String::from_utf8_lossy(slice).into_owned());
+        }
+    }
+    None
+}
+
+impl Schema {
+    /// Render a human-readable multi-line report.
