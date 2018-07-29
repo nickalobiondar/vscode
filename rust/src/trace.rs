@@ -28,3 +28,15 @@ impl fmt::Display for Direction {
 }
 
 /// A single captured message.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Record {
+    pub ts_nanos: i64,
+    pub dir: Direction,
+    pub session: String,
+    pub proto: String,
+    pub payload: Vec<u8>,
+}
+
+impl Record {
+    /// Encode as a single trace line (no trailing newline).
+    pub fn encode(&self) -> String {
