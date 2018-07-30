@@ -40,3 +40,15 @@ pub struct Record {
 impl Record {
     /// Encode as a single trace line (no trailing newline).
     pub fn encode(&self) -> String {
+        format!(
+            "V1 {} {} {} {} {} {}",
+            self.ts_nanos,
+            self.dir,
+            self.session,
+            self.proto,
+            self.payload.len(),
+            base64_encode(&self.payload),
+        )
+    }
+}
+
