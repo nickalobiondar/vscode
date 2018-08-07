@@ -52,3 +52,14 @@ impl Record {
     }
 }
 
+/// Error while parsing a trace line.
+#[derive(Debug)]
+pub struct ParseError {
+    pub line: usize,
+    pub msg: String,
+}
+
+impl fmt::Display for ParseError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "trace: line {}: {}", self.line, self.msg)
+    }
