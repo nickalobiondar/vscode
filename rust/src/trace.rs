@@ -122,3 +122,15 @@ pub fn read_all<R: BufRead>(reader: R) -> io::Result<Vec<Record>> {
             Err(e) => return Err(io::Error::new(io::ErrorKind::InvalidData, e.to_string())),
         }
     }
+    Ok(out)
+}
+
+const B64: &[u8; 64] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+/// Standard base64 encoder (with padding), std-only.
+pub fn base64_encode(data: &[u8]) -> String {
+    let mut out = String::with_capacity(data.len().div_ceil(3) * 4);
+    for chunk in data.chunks(3) {
+        let b0 = chunk[0] as u32;
+        let b1 = *chunk.get(1).unwrap_or(&0) as u32;
+        let b2 = *chunk.get(2).unwrap_or(&0) as u32;
