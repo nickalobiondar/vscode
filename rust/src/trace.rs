@@ -134,3 +134,15 @@ pub fn base64_encode(data: &[u8]) -> String {
         let b0 = chunk[0] as u32;
         let b1 = *chunk.get(1).unwrap_or(&0) as u32;
         let b2 = *chunk.get(2).unwrap_or(&0) as u32;
+        let n = (b0 << 16) | (b1 << 8) | b2;
+        out.push(B64[(n >> 18 & 63) as usize] as char);
+        out.push(B64[(n >> 12 & 63) as usize] as char);
+        if chunk.len() > 1 {
+            out.push(B64[(n >> 6 & 63) as usize] as char);
+        } else {
+            out.push('=');
+        }
+        if chunk.len() > 2 {
+            out.push(B64[(n & 63) as usize] as char);
+        } else {
+            out.push('=');
