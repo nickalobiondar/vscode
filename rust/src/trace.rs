@@ -75,3 +75,15 @@ pub fn decode_line(line: &str, line_no: usize) -> Result<Record, ParseError> {
     };
     let fields: Vec<&str> = line.splitn(7, ' ').collect();
     if fields.len() != 7 {
+        return Err(err(format!("expected 7 fields, got {}", fields.len())));
+    }
+    if fields[0] != "V1" {
+        return Err(err(format!("unknown record version {:?}", fields[0])));
+    }
+    let ts_nanos: i64 = fields[1]
+        .parse()
+        .map_err(|e| err(format!("invalid timestamp: {e}")))?;
+    let dir = match fields[2] {
+        ">" => Direction::Request,
+        "<" => Direction::Response,
+        other => return Err(err(format!("invalid direction {other:?}"))),
