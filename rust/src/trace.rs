@@ -99,3 +99,15 @@ pub fn decode_line(line: &str, line_no: usize) -> Result<Record, ParseError> {
             payload.len()
         )));
     }
+    Ok(Record {
+        ts_nanos,
+        dir,
+        session: fields[3].to_string(),
+        proto: fields[4].to_string(),
+        payload,
+    })
+}
+
+/// Read all records from a buffered reader, skipping comments and blank lines.
+pub fn read_all<R: BufRead>(reader: R) -> io::Result<Vec<Record>> {
+    let mut out = Vec::new();
