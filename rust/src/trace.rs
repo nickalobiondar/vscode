@@ -87,3 +87,15 @@ pub fn decode_line(line: &str, line_no: usize) -> Result<Record, ParseError> {
         ">" => Direction::Request,
         "<" => Direction::Response,
         other => return Err(err(format!("invalid direction {other:?}"))),
+    };
+    let declared_len: usize = fields[5]
+        .parse()
+        .map_err(|e| err(format!("invalid length: {e}")))?;
+    let payload =
+        base64_decode(fields[6]).map_err(|e| err(format!("invalid base64 payload: {e}")))?;
+    if payload.len() != declared_len {
+        return Err(err(format!(
+            "length mismatch: declared {declared_len}, decoded {}",
+            payload.len()
+        )));
+    }
