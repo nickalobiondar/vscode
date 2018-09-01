@@ -146,3 +146,15 @@ pub fn base64_encode(data: &[u8]) -> String {
             out.push(B64[(n & 63) as usize] as char);
         } else {
             out.push('=');
+        }
+    }
+    out
+}
+
+/// Standard base64 decoder (with padding), std-only.
+pub fn base64_decode(s: &str) -> Result<Vec<u8>, String> {
+    fn val(c: u8) -> Result<u32, String> {
+        match c {
+            b'A'..=b'Z' => Ok((c - b'A') as u32),
+            b'a'..=b'z' => Ok((c - b'a' + 26) as u32),
+            b'0'..=b'9' => Ok((c - b'0' + 52) as u32),
