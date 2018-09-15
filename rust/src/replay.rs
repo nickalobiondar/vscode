@@ -14,3 +14,15 @@ use crate::trace::{Direction, Record};
 /// Configuration for a replay run.
 #[derive(Debug, Clone)]
 pub struct ReplayConfig {
+    pub target: String,
+    pub read_timeout: Duration,
+    pub preserve_timing: bool,
+    /// Upper bound on how long we wait after each request for a response.
+    pub max_wait: Duration,
+}
+
+impl Default for ReplayConfig {
+    fn default() -> Self {
+        ReplayConfig {
+            target: String::new(),
+            read_timeout: Duration::from_millis(200),
