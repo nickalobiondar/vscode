@@ -37,3 +37,14 @@ impl Default for ReplayConfig {
 pub struct Exchange {
     pub session: String,
     pub request: Vec<u8>,
+    pub response: Vec<u8>,
+    pub error: Option<String>,
+}
+
+/// Aggregate results of a replay run.
+#[derive(Debug, Clone, Default)]
+pub struct ReplayReport {
+    pub exchanges: Vec<Exchange>,
+    pub errors: usize,
+}
+
