@@ -48,3 +48,15 @@ pub struct ReplayReport {
     pub errors: usize,
 }
 
+impl ReplayReport {
+    pub fn summary(&self) -> String {
+        let bytes_in: usize = self.exchanges.iter().map(|e| e.response.len()).sum();
+        let bytes_out: usize = self.exchanges.iter().map(|e| e.request.len()).sum();
+        format!(
+            "replayed {} request(s), {} error(s), sent {} byte(s), received {} byte(s)",
+            self.exchanges.len(),
+            self.errors,
+            bytes_out,
+            bytes_in
+        )
+    }
