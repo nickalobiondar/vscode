@@ -26,3 +26,14 @@ impl Default for ReplayConfig {
         ReplayConfig {
             target: String::new(),
             read_timeout: Duration::from_millis(200),
+            preserve_timing: false,
+            max_wait: Duration::from_millis(500),
+        }
+    }
+}
+
+/// Outcome of replaying a single request.
+#[derive(Debug, Clone)]
+pub struct Exchange {
+    pub session: String,
+    pub request: Vec<u8>,
