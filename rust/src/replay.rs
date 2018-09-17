@@ -71,3 +71,15 @@ pub fn replay(records: &[Record], cfg: &ReplayConfig) -> ReplayReport {
     // Preserve session ordering by first appearance.
     let mut order: Vec<String> = Vec::new();
     let mut by_session: BTreeMap<String, Vec<&Record>> = BTreeMap::new();
+    for r in records {
+        if !by_session.contains_key(&r.session) {
+            order.push(r.session.clone());
+        }
+        by_session.entry(r.session.clone()).or_default().push(r);
+    }
+
+    let mut report = ReplayReport::default();
+    for session in order {
+        let recs = &by_session[&session];
+        replay_session(&session, recs, cfg, &mut report);
+    }
