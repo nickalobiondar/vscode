@@ -60,3 +60,14 @@ impl ReplayReport {
             bytes_in
         )
     }
+}
+
+/// Replay all request records grouped by session against cfg.target.
+///
+/// Response records in the input are ignored for sending but could be used by
+/// callers for comparison. Returns an error only for setup failures; per-request
+/// failures are captured in the report.
+pub fn replay(records: &[Record], cfg: &ReplayConfig) -> ReplayReport {
+    // Preserve session ordering by first appearance.
+    let mut order: Vec<String> = Vec::new();
+    let mut by_session: BTreeMap<String, Vec<&Record>> = BTreeMap::new();
