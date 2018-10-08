@@ -94,3 +94,14 @@ fn replay_session(session: &str, recs: &[&Record], cfg: &ReplayConfig, report: &
             report.exchanges.push(Exchange {
                 session: session.to_string(),
                 request: Vec::new(),
+                response: Vec::new(),
+                error: Some(format!("connect {}: {e}", cfg.target)),
+            });
+            return;
+        }
+    };
+    let _ = stream.set_read_timeout(Some(cfg.read_timeout));
+    let mut stream = stream;
+
+    let mut prev_ts: Option<i64> = None;
+    for r in recs {
