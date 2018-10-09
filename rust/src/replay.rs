@@ -128,3 +128,15 @@ fn replay_session(session: &str, recs: &[&Record], cfg: &ReplayConfig, report: &
         };
         if let Err(e) = stream.write_all(&r.payload) {
             ex.error = Some(format!("write: {e}"));
+            report.errors += 1;
+            report.exchanges.push(ex);
+            return;
+        }
+        let _ = stream.flush();
+        ex.response = read_response(&mut stream, cfg.max_wait);
+        report.exchanges.push(ex);
+    }
+}
+
+fn read_response(stream: &mut TcpStream, max_wait: Duration) -> Vec<u8> {
+    let start = std::time::Instant::now();
