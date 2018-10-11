@@ -16,3 +16,15 @@ import (
 	"os"
 	"time"
 
+	"github.com/portsmith/portcap/internal/capture"
+	"github.com/portsmith/portcap/internal/normalize"
+	"github.com/portsmith/portcap/internal/trace"
+)
+
+const version = "1.0.0"
+
+func main() {
+	if len(os.Args) < 2 {
+		usage()
+		os.Exit(2)
+	}
