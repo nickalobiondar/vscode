@@ -41,3 +41,16 @@ func main() {
 	case "help", "-h", "--help":
 		usage()
 	default:
+		fmt.Fprintf(os.Stderr, "portcap: unknown command %q\n", os.Args[1])
+		usage()
+		os.Exit(2)
+	}
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "portcap:", err)
+		os.Exit(1)
+	}
+}
+
+func usage() {
+	fmt.Fprint(os.Stderr, `portcap - capture & normalize protocol traffic (portsmith trace v1)
+
