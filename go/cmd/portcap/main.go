@@ -54,3 +54,15 @@ func main() {
 func usage() {
 	fmt.Fprint(os.Stderr, `portcap - capture & normalize protocol traffic (portsmith trace v1)
 
+usage:
+  portcap capture   -listen ADDR -target ADDR [-proto NAME] [-out FILE] [-max N]
+  portcap normalize -in FILE [-proto NAME] [-session ID] [-out FILE]
+  portcap stats     -in FILE
+  portcap version
+
+examples:
+  portcap capture -listen :9000 -target 127.0.0.1:6379 -proto redis -out cap.trace
+  portcap normalize -in session.log -proto http -out http.trace
+  portcap stats -in cap.trace
+`)
+}
