@@ -91,3 +91,16 @@ func cmdCapture(args []string) error {
 	proxy := capture.New(*listen, *target, *proto, tw)
 	fmt.Fprintf(os.Stderr, "# capturing %s -> %s (proto=%s) to %s\n", *listen, *target, *proto, *out)
 	return proxy.Serve(*max)
+}
+
+func cmdNormalize(args []string) error {
+	fs := flag.NewFlagSet("normalize", flag.ExitOnError)
+	in := fs.String("in", "-", "input raw session log (- for stdin)")
+	proto := fs.String("proto", "raw", "protocol hint recorded in the trace")
+	session := fs.String("session", "norm0001", "session id for produced records")
+	out := fs.String("out", "-", "output trace file (- for stdout)")
+	start := fs.Int64("start", time.Now().UnixNano(), "start timestamp (unix nanos)")
+	step := fs.Int64("step", int64(time.Millisecond), "timestamp step between records (nanos)")
+	_ = fs.Parse(args)
+
+	r, closeIn, err := openIn(*in)
