@@ -79,3 +79,15 @@ func cmdCapture(args []string) error {
 	if *target == "" {
 		return fmt.Errorf("capture: -target is required")
 	}
+	w, closeOut, err := openOut(*out)
+	if err != nil {
+		return err
+	}
+	defer closeOut()
+
+	tw := trace.NewWriter(w, false)
+	defer tw.Flush()
+
+	proxy := capture.New(*listen, *target, *proto, tw)
+	fmt.Fprintf(os.Stderr, "# capturing %s -> %s (proto=%s) to %s\n", *listen, *target, *proto, *out)
+	return proxy.Serve(*max)
