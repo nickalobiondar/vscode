@@ -116,3 +116,16 @@ func cmdNormalize(args []string) error {
 
 	w, closeOut, err := openOut(*out)
 	if err != nil {
+		return err
+	}
+	defer closeOut()
+
+	tw := trace.NewWriter(w, false)
+	for _, rec := range records {
+		if err := tw.Write(rec); err != nil {
+			return err
+		}
+	}
+	if err := tw.Flush(); err != nil {
+		return err
+	}
