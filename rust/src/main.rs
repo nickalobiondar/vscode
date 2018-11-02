@@ -18,3 +18,15 @@ const VERSION: &str = "1.0.0";
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
+    if args.len() < 2 {
+        usage();
+        exit(2);
+    }
+    let result = match args[1].as_str() {
+        "infer" => cmd_infer(&args[2..]),
+        "replay" => cmd_replay(&args[2..]),
+        "cat" => cmd_cat(&args[2..]),
+        "version" | "-v" | "--version" => {
+            println!("portsmith-replay {VERSION}");
+            Ok(())
+        }
