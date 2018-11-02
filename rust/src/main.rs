@@ -30,3 +30,16 @@ fn main() {
             println!("portsmith-replay {VERSION}");
             Ok(())
         }
+        "help" | "-h" | "--help" => {
+            usage();
+            Ok(())
+        }
+        other => {
+            eprintln!("portsmith-replay: unknown command {other:?}");
+            usage();
+            exit(2);
+        }
+    };
+    if let Err(e) = result {
+        eprintln!("portsmith-replay: {e}");
+        exit(1);
