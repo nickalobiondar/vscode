@@ -104,3 +104,15 @@ func cmdNormalize(args []string) error {
 	_ = fs.Parse(args)
 
 	r, closeIn, err := openIn(*in)
+	if err != nil {
+		return err
+	}
+	defer closeIn()
+
+	records, err := normalize.FromRawLog(r, *proto, *session, *start, *step)
+	if err != nil {
+		return err
+	}
+
+	w, closeOut, err := openOut(*out)
+	if err != nil {
