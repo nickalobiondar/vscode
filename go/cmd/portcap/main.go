@@ -142,3 +142,15 @@ func cmdStats(args []string) error {
 	if err != nil {
 		return err
 	}
+	defer closeIn()
+
+	s, err := normalize.Compute(trace.NewReader(r))
+	if err != nil {
+		return err
+	}
+	fmt.Printf("records:   %d\n", s.Records)
+	fmt.Printf("requests:  %d\n", s.Requests)
+	fmt.Printf("responses: %d\n", s.Responses)
+	fmt.Printf("sessions:  %d\n", s.Sessions)
+	fmt.Printf("bytes:     %d\n", s.TotalBytes)
+	fmt.Printf("duration:  %s\n", s.Duration())
