@@ -43,3 +43,15 @@ fn main() {
     if let Err(e) = result {
         eprintln!("portsmith-replay: {e}");
         exit(1);
+    }
+}
+
+fn usage() {
+    eprint!(
+        "portsmith-replay - schema inference & replay (portsmith trace v1)\n\
+\n\
+usage:\n\
+  portsmith-replay infer  -in FILE\n\
+  portsmith-replay replay -in FILE -target HOST:PORT [-timing] [-timeout MS] [-wait MS]\n\
+  portsmith-replay cat    -in FILE\n\
+  portsmith-replay version\n\
