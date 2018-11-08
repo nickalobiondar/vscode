@@ -93,3 +93,16 @@ impl Flags {
     fn get<'a>(&'a self, k: &str, default: &'a str) -> &'a str {
         self.map.get(k).map(String::as_str).unwrap_or(default)
     }
+    fn has(&self, k: &str) -> bool {
+        self.toggles.contains(k)
+    }
+}
+
+fn load_records(path: &str) -> io::Result<Vec<Record>> {
+    if path == "-" || path.is_empty() {
+        let stdin = io::stdin();
+        let locked = stdin.lock();
+        trace::read_all(locked)
+    } else {
+        let f = File::open(path)?;
+        trace::read_all(BufReader::new(f))
