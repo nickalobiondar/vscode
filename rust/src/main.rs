@@ -55,3 +55,16 @@ usage:\n\
   portsmith-replay replay -in FILE -target HOST:PORT [-timing] [-timeout MS] [-wait MS]\n\
   portsmith-replay cat    -in FILE\n\
   portsmith-replay version\n\
+\n\
+examples:\n\
+  portsmith-replay infer  -in samples/redis.trace\n\
+  portsmith-replay replay -in samples/redis.trace -target 127.0.0.1:6379\n\
+  portsmith-replay cat    -in samples/http.trace\n"
+    );
+}
+
+/// Minimal flag parser: collects -key value pairs and -flag toggles.
+struct Flags {
+    map: std::collections::HashMap<String, String>,
+    toggles: std::collections::HashSet<String>,
+}
