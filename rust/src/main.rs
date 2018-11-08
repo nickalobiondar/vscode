@@ -68,3 +68,16 @@ struct Flags {
     map: std::collections::HashMap<String, String>,
     toggles: std::collections::HashSet<String>,
 }
+
+impl Flags {
+    fn parse(args: &[String]) -> Self {
+        let mut map = std::collections::HashMap::new();
+        let mut toggles = std::collections::HashSet::new();
+        let mut i = 0;
+        while i < args.len() {
+            let a = &args[i];
+            if let Some(key) = a.strip_prefix('-') {
+                if i + 1 < args.len() && !args[i + 1].starts_with('-') {
+                    map.insert(key.to_string(), args[i + 1].clone());
+                    i += 2;
+                } else {
