@@ -131,3 +131,16 @@ fn cmd_replay(args: &[String]) -> io::Result<()> {
     let wait_ms: u64 = f.get("wait", "500").parse().unwrap_or(500);
     let cfg = ReplayConfig {
         target: target.to_string(),
+        read_timeout: Duration::from_millis(timeout_ms),
+        preserve_timing: f.has("timing"),
+        max_wait: Duration::from_millis(wait_ms),
+    };
+    let report = replay(&records, &cfg);
+    let stdout = io::stdout();
+    let mut out = stdout.lock();
+    for ex in &report.exchanges {
+        match &ex.error {
+            Some(e) => writeln!(out, "[{}] ERROR {}", ex.session, e)?,
+            None => writeln!(
+                out,
+                "[{}] {} bytes -> {} bytes | {}",
