@@ -106,3 +106,15 @@ fn load_records(path: &str) -> io::Result<Vec<Record>> {
     } else {
         let f = File::open(path)?;
         trace::read_all(BufReader::new(f))
+    }
+}
+
+fn cmd_infer(args: &[String]) -> io::Result<()> {
+    let f = Flags::parse(args);
+    let records = load_records(f.get("in", "-"))?;
+    let schema = infer(&records);
+    print!("{}", schema.report());
+    Ok(())
+}
+
+fn cmd_replay(args: &[String]) -> io::Result<()> {
