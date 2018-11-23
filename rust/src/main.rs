@@ -144,3 +144,15 @@ fn cmd_replay(args: &[String]) -> io::Result<()> {
             None => writeln!(
                 out,
                 "[{}] {} bytes -> {} bytes | {}",
+                ex.session,
+                ex.request.len(),
+                ex.response.len(),
+                preview(&ex.response)
+            )?,
+        }
+    }
+    writeln!(out, "{}", report.summary())?;
+    if report.errors > 0 {
+        exit(1);
+    }
+    Ok(())
