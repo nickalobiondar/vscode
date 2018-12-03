@@ -156,3 +156,16 @@ fn cmd_replay(args: &[String]) -> io::Result<()> {
         exit(1);
     }
     Ok(())
+}
+
+fn cmd_cat(args: &[String]) -> io::Result<()> {
+    let f = Flags::parse(args);
+    let records = load_records(f.get("in", "-"))?;
+    let stdout = io::stdout();
+    let mut out = stdout.lock();
+    for r in &records {
+        let arrow = match r.dir {
+            Direction::Request => "->",
+            Direction::Response => "<-",
+        };
+        writeln!(
