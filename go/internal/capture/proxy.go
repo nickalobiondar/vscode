@@ -86,3 +86,17 @@ func (p *Proxy) handle(client net.Conn) error {
 		defer wg.Done()
 		p.pump(client, upstream, session, trace.Request)
 		if tc, ok := upstream.(*net.TCPConn); ok {
+			_ = tc.CloseWrite()
+		}
+	}()
+	// upstream -> client : Response records
+	go func() {
+		defer wg.Done()
+		p.pump(upstream, client, session, trace.Response)
+		if tc, ok := client.(*net.TCPConn); ok {
+			_ = tc.CloseWrite()
+		}
+	}()
+	wg.Wait()
+	return nil
+}
