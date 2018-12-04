@@ -71,3 +71,18 @@ func (p *Proxy) Serve(maxConns int) error {
 
 func (p *Proxy) handle(client net.Conn) error {
 	defer client.Close()
+	session := newSessionID()
+
+	upstream, err := net.Dial("tcp", p.Target)
+	if err != nil {
+		return fmt.Errorf("dial target %s: %w", p.Target, err)
+	}
+	defer upstream.Close()
+
+	var wg sync.WaitGroup
+	wg.Add(2)
+	// client -> upstream : Request records
+	go func() {
+		defer wg.Done()
+		p.pump(client, upstream, session, trace.Request)
+		if tc, ok := upstream.(*net.TCPConn); ok {
