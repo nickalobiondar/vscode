@@ -12,3 +12,18 @@ import (
 	"github.com/portsmith/portcap/internal/trace"
 )
 
+// FromRawLog parses a simple line-oriented session log into trace records.
+//
+// Each line is "<dir> <text>" where <dir> is ">" or "<". Consecutive lines
+// with the same direction are coalesced into a single record. Timestamps are
+// synthesized monotonically starting at startNanos with a fixed step. The
+// resulting payloads are the raw UTF-8 bytes of the text (a trailing newline is
+// appended so replayed line protocols behave correctly).
+func FromRawLog(r io.Reader, proto, session string, startNanos, stepNanos int64) ([]trace.Record, error) {
+	sc := bufio.NewScanner(r)
+	sc.Buffer(make([]byte, 0, 64*1024), 8*1024*1024)
+
+	var records []trace.Record
+	var cur *strings.Builder
+	var curDir trace.Direction
+	ts := startNanos
