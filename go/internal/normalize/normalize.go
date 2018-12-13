@@ -58,3 +58,18 @@ func FromRawLog(r io.Reader, proto, session string, startNanos, stepNanos int64)
 		case strings.HasPrefix(line, "> "):
 			dir, body = trace.Request, line[2:]
 		case strings.HasPrefix(line, "< "):
+			dir, body = trace.Response, line[2:]
+		}
+		if cur != nil && dir != curDir {
+			flush()
+		}
+		if cur == nil {
+			cur = &strings.Builder{}
+			curDir = dir
+		}
+		cur.WriteString(body)
+		cur.WriteByte('\n')
+	}
+	flush()
+	if err := sc.Err(); err != nil {
+		return nil, err
