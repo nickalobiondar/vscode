@@ -30,3 +30,17 @@ import (
 // Magic is the recommended first line of a trace file.
 const Magic = "#portsmith-trace v1"
 
+// Direction identifies which side of a session produced a record.
+type Direction byte
+
+const (
+	// Request is a client-to-server message.
+	Request Direction = '>'
+	// Response is a server-to-client message.
+	Response Direction = '<'
+)
+
+func (d Direction) String() string {
+	if d == Response {
+		return "<"
+	}
