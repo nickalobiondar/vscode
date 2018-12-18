@@ -103,3 +103,18 @@ func Compute(tr *trace.Reader) (Stats, error) {
 		}
 		s.Records++
 		s.TotalBytes += len(rec.Payload)
+		s.ByProto[rec.Proto]++
+		sessions[rec.Session] = struct{}{}
+		if rec.Dir == trace.Response {
+			s.Responses++
+		} else {
+			s.Requests++
+		}
+		if s.FirstNanos < 0 || rec.TimestampNanos < s.FirstNanos {
+			s.FirstNanos = rec.TimestampNanos
+		}
+		if rec.TimestampNanos > s.LastNanos {
+			s.LastNanos = rec.TimestampNanos
+		}
+	}
+	s.Sessions = len(sessions)
