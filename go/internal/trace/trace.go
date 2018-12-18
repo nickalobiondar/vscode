@@ -15,3 +15,18 @@
 //   - payload        : standard base64 encoding of the raw payload bytes
 //
 // The format is intentionally simple so that both the Go capture tool and the
+// Rust replay tool can parse it with standard libraries only.
+package trace
+
+import (
+	"bufio"
+	"encoding/base64"
+	"fmt"
+	"io"
+	"strconv"
+	"strings"
+)
+
+// Magic is the recommended first line of a trace file.
+const Magic = "#portsmith-trace v1"
+
