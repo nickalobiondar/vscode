@@ -102,3 +102,17 @@ func DecodeLine(line string, lineNo int) (Record, error) {
 	}
 	payload, err := base64.StdEncoding.DecodeString(fields[6])
 	if err != nil {
+		return Record{}, &ParseError{lineNo, "invalid base64 payload: " + err.Error()}
+	}
+	if len(payload) != declaredLen {
+		return Record{}, &ParseError{lineNo, fmt.Sprintf("length mismatch: declared %d, decoded %d", declaredLen, len(payload))}
+	}
+	return Record{
+		TimestampNanos: ts,
+		Dir:            dir,
+		Session:        fields[3],
+		Proto:          fields[4],
+		Payload:        payload,
+	}, nil
+}
+
