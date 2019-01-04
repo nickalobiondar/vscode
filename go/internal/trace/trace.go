@@ -73,3 +73,17 @@ type ParseError struct {
 	Line int
 	Msg  string
 }
+
+func (e *ParseError) Error() string {
+	return fmt.Sprintf("trace: line %d: %s", e.Line, e.Msg)
+}
+
+// DecodeLine parses a single record line. It returns an error for malformed
+// input. Comment and blank lines must be filtered by the caller.
+func DecodeLine(line string, lineNo int) (Record, error) {
+	fields := strings.SplitN(line, " ", 7)
+	if len(fields) != 7 {
+		return Record{}, &ParseError{lineNo, fmt.Sprintf("expected 7 fields, got %d", len(fields))}
+	}
+	if fields[0] != "V1" {
+		return Record{}, &ParseError{lineNo, "unknown record version " + strconv.Quote(fields[0])}
