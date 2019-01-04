@@ -58,3 +58,18 @@ type Record struct {
 
 // Encode writes the record as a single trace line (no trailing newline).
 func (r Record) Encode() string {
+	return fmt.Sprintf("V1 %d %s %s %s %d %s",
+		r.TimestampNanos,
+		r.Dir,
+		r.Session,
+		r.Proto,
+		len(r.Payload),
+		base64.StdEncoding.EncodeToString(r.Payload),
+	)
+}
+
+// ParseError describes a malformed record along with the offending line.
+type ParseError struct {
+	Line int
+	Msg  string
+}
