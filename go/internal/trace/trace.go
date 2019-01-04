@@ -44,3 +44,17 @@ func (d Direction) String() string {
 	if d == Response {
 		return "<"
 	}
+	return ">"
+}
+
+// Record is a single captured message.
+type Record struct {
+	TimestampNanos int64
+	Dir            Direction
+	Session        string
+	Proto          string
+	Payload        []byte
+}
+
+// Encode writes the record as a single trace line (no trailing newline).
+func (r Record) Encode() string {
