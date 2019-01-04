@@ -116,3 +116,18 @@ func DecodeLine(line string, lineNo int) (Record, error) {
 	}, nil
 }
 
+// Writer serializes records to an io.Writer.
+type Writer struct {
+	w             *bufio.Writer
+	wroteMagic    bool
+	suppressMagic bool
+}
+
+// NewWriter returns a Writer. If suppressMagic is false, the magic header is
+// emitted before the first record.
+func NewWriter(w io.Writer, suppressMagic bool) *Writer {
+	return &Writer{w: bufio.NewWriter(w), suppressMagic: suppressMagic}
+}
+
+// Write encodes and writes a single record.
+func (tw *Writer) Write(r Record) error {
