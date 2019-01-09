@@ -131,3 +131,17 @@ func NewWriter(w io.Writer, suppressMagic bool) *Writer {
 
 // Write encodes and writes a single record.
 func (tw *Writer) Write(r Record) error {
+	if !tw.wroteMagic && !tw.suppressMagic {
+		if _, err := tw.w.WriteString(Magic + "\n"); err != nil {
+			return err
+		}
+		tw.wroteMagic = true
+	}
+	if _, err := tw.w.WriteString(r.Encode()); err != nil {
+		return err
+	}
+	return tw.w.WriteByte('\n')
+}
+
+// Flush flushes buffered data.
+func (tw *Writer) Flush() error { return tw.w.Flush() }
