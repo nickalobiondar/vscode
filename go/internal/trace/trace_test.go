@@ -14,3 +14,12 @@ func TestEncodeDecodeRoundTrip(t *testing.T) {
 	}
 
 	var buf bytes.Buffer
+	w := NewWriter(&buf, false)
+	for _, r := range recs {
+		if err := w.Write(r); err != nil {
+			t.Fatalf("write: %v", err)
+		}
+	}
+	if err := w.Flush(); err != nil {
+		t.Fatalf("flush: %v", err)
+	}
