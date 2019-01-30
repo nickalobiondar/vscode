@@ -33,3 +33,12 @@ func TestEncodeDecodeRoundTrip(t *testing.T) {
 		}
 		if err != nil {
 			t.Fatalf("read: %v", err)
+		}
+		got = append(got, rec)
+	}
+
+	if len(got) != len(recs) {
+		t.Fatalf("got %d records, want %d", len(got), len(recs))
+	}
+	for i := range recs {
+		if got[i].TimestampNanos != recs[i].TimestampNanos ||
