@@ -17,3 +17,12 @@ fn base64_round_trips() {
         let enc = base64_encode(c);
         let dec = base64_decode(&enc).expect("decode");
         assert_eq!(&dec, c, "round trip failed for {c:?}");
+    }
+    // Known-answer vector.
+    assert_eq!(base64_encode(b"Man"), "TWFu");
+    assert_eq!(base64_decode("TWFu").unwrap(), b"Man");
+}
+
+#[test]
+fn decode_line_matches_encode() {
+    let r = Record {
