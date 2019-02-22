@@ -46,3 +46,13 @@ fn decode_line_rejects_bad_input() {
 }
 
 #[test]
+fn infer_detects_text_and_tokens() {
+    let recs = vec![
+        Record {
+            ts_nanos: 1,
+            dir: Direction::Request,
+            session: "a".into(),
+            proto: "redis".into(),
+            payload: b"GET key1\r\n".to_vec(),
+        },
+        Record {
