@@ -26,3 +26,13 @@ fn base64_round_trips() {
 #[test]
 fn decode_line_matches_encode() {
     let r = Record {
+        ts_nanos: 42,
+        dir: Direction::Response,
+        session: "s1".into(),
+        proto: "redis".into(),
+        payload: b"+PONG\r\n".to_vec(),
+    };
+    let line = r.encode();
+    let back = decode_line(&line, 1).expect("decode");
+    assert_eq!(back, r);
+}
