@@ -1,2 +1,3 @@
 # Raw Redis session log. Lines beginning with "> " are client requests,
 # "< " are server responses. Consecutive same-direction lines are coalesced.
+> PING
