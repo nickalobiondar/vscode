@@ -3,3 +3,4 @@
 > PING
 < +PONG
 > SET key1 hi
+< +OK
