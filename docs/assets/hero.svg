@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 380" width="1200" height="380" role="img" aria-labelledby="ptitle pdesc" font-family="ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace">
+  <title id="ptitle">portsmith: protocol discovery &amp; replay</title>
+  <desc id="pdesc">A network protocol cartographer's field manual: an oscilloscope trace of packets flowing through the capture, normalize, infer and replay pipeline.</desc>
+
+  <defs>
+    <linearGradient id="midnight" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#050912"/>
+      <stop offset="0.55" stop-color="#0a1424"/>
+      <stop offset="1" stop-color="#060b16"/>
+    </linearGradient>
+    <linearGradient id="cyanline" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#0aa9c2" stop-opacity="0.1"/>
+      <stop offset="0.5" stop-color="#3ff0e0"/>
