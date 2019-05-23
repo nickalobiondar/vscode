@@ -49,3 +49,14 @@ A decoder MUST reject a record when:
 * `ts_nanos` is not a valid int64;
 * `dir` is neither `>` nor `<`;
 * `len` is not a valid non-negative integer;
+* the payload is not valid standard base64;
+* the decoded payload length does not equal `len`.
+
+The `len` field is redundant with the base64 payload on purpose: it lets a reader
+cheaply detect truncation or corruption before allocating.
+
+## Example
+
+```
+#portsmith-trace v1
+V1 1700000000000000000 > a1b2c3 redis 5 UElORwo=
