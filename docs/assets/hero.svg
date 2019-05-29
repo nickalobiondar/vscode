@@ -76,3 +76,13 @@
       <animate attributeName="x" from="-40" to="1200" dur="5.5s" repeatCount="indefinite"/>
     </rect>
     <line x1="0" y1="150" x2="0" y2="330" stroke="#3ff0e0" stroke-width="1.5" opacity="0.7">
+      <animate attributeName="x1" from="0" to="1240" dur="5.5s" repeatCount="indefinite"/>
+      <animate attributeName="x2" from="0" to="1240" dur="5.5s" repeatCount="indefinite"/>
+    </line>
+  </g>
+
+  <!-- packets riding the wire, request (cyan) and response (orange) -->
+  <g>
+    <rect width="18" height="12" rx="2" fill="#3ff0e0" y="234">
+      <animateMotion dur="3.2s" repeatCount="indefinite"
+        path="M0,0 L1200,0"/>
