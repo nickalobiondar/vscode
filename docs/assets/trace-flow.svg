@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" width="1200" height="620" role="img" aria-labelledby="ttitle tdesc" font-family="ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace">
+  <title id="ttitle">portsmith trace flow: capture to replay</title>
+  <desc id="tdesc">A workshop schematic showing a raw session log normalized into base64 trace records, inferred into a schema, and replayed against a live target, rendered as an oscilloscope terminal.</desc>
+
+  <defs>
+    <linearGradient id="mid2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#060b16"/>
+      <stop offset="1" stop-color="#0a1424"/>
+    </linearGradient>
+    <linearGradient id="wire" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#3ff0e0"/>
+      <stop offset="1" stop-color="#ff8a3d"/>
+    </linearGradient>
+    <filter id="soft2" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="1.6" result="b"/>
