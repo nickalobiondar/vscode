@@ -13,3 +13,13 @@
     </linearGradient>
     <filter id="soft2" x="-40%" y="-40%" width="180%" height="180%">
       <feGaussianBlur stdDeviation="1.6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#3ff0e0"/>
+    </marker>
+    <marker id="arrowo" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#ff8a3d"/>
+    </marker>
+  </defs>
+
