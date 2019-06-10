@@ -83,3 +83,12 @@
   </g>
 
   <!-- record field legend -->
+  <g transform="translate(400,292)" font-size="9.5" fill="#7fa6c0">
+    <text x="14" y="0"><tspan fill="#ff8a3d">V1</tspan> = version &#160; ts_nanos &#160; <tspan fill="#3ff0e0">dir</tspan> &#160; session &#160; proto &#160; len &#160; <tspan fill="#e8fbff">base64(payload)</tspan> &#160; &#8212; split on first 6 spaces</text>
+  </g>
+
+  <!-- infer arrow (orange) -->
+  <g font-size="11" fill="#ff8a3d">
+    <line x1="842" y1="190" x2="922" y2="190" stroke="#ff8a3d" stroke-width="1.6" marker-end="url(#arrowo)"/>
+    <text x="882" y="180" text-anchor="middle">infer</text>
+    <circle cx="842" cy="190" r="3" fill="#ff8a3d">
