@@ -43,3 +43,13 @@
       <text x="16" y="74"><tspan fill="#ff8a3d">&lt;</tspan> +PONG</text>
       <text x="16" y="96"><tspan fill="#3ff0e0">&gt;</tspan> SET key1 hi</text>
       <text x="16" y="118"><tspan fill="#ff8a3d">&lt;</tspan> +OK</text>
+      <text x="16" y="140"><tspan fill="#3ff0e0">&gt;</tspan> GET key1</text>
+      <text x="16" y="162"><tspan fill="#ff8a3d">&lt;</tspan> $2 / hi</text>
+    </g>
+  </g>
+
+  <!-- normalize arrow -->
+  <g font-size="11" fill="#3ff0e0">
+    <line x1="312" y1="190" x2="392" y2="190" stroke="#3ff0e0" stroke-width="1.6" marker-end="url(#arrow)"/>
+    <text x="352" y="180" text-anchor="middle">normalize</text>
+    <circle cx="312" cy="190" r="3" fill="#3ff0e0">
