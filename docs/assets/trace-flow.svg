@@ -102,3 +102,13 @@
     <rect width="230" height="180" rx="8" fill="#0b1a2c" stroke="#3a2a18"/>
     <rect width="230" height="26" rx="8" fill="#2a1c0e"/>
     <text x="14" y="18" font-size="12" fill="#ff8a3d">schema report</text>
+    <g font-size="11" fill="#ffcfa6">
+      <text x="14" y="48" fill="#ff8a3d">[redis request]</text>
+      <text x="14" y="66">samples : 3</text>
+      <text x="14" y="84">encoding : <tspan fill="#e8fbff">text</tspan></text>
+      <text x="14" y="102">terminator : <tspan fill="#e8fbff">LF</tspan></text>
+      <text x="14" y="120">len min=5 max=12</text>
+      <text x="14" y="138" fill="#3ff0e0">tokens:</text>
+      <text x="14" y="156" fill="#e8fbff">GET&#160;1 &#160;PING&#160;1 &#160;SET&#160;1</text>
+    </g>
+  </g>
