@@ -73,3 +73,13 @@
       <text x="14" y="168"><tspan fill="#ff8a3d">V1</tspan> 1700000000250000000 <tspan fill="#ff8a3d">&lt;</tspan> a1b2c3 redis 6 <tspan fill="#e8fbff">JDIKaGkK</tspan></text>
     </g>
     <!-- field legend callout -->
+    <g font-size="9" fill="#546b80">
+      <text x="14" y="176" opacity="0"> </text>
+    </g>
+    <!-- highlight sweep across records -->
+    <rect x="8" y="56" width="424" height="16" fill="#3ff0e0" opacity="0.10">
+      <animate attributeName="y" values="56;56;76;96;116;136;156;56" dur="4.2s" repeatCount="indefinite"/>
+    </rect>
+  </g>
+
+  <!-- record field legend -->
