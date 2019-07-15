@@ -6,3 +6,9 @@ labels: bug
 
 **What happened**
 
+<!-- expected vs actual -->
+
+**Minimal reproducer**
+
+```
+make demo
