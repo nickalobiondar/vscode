@@ -158,3 +158,30 @@ pub fn base64_decode(s: &str) -> Result<Vec<u8>, String> {
             b'A'..=b'Z' => Ok((c - b'A') as u32),
             b'a'..=b'z' => Ok((c - b'a' + 26) as u32),
             b'0'..=b'9' => Ok((c - b'0' + 52) as u32),
+            b'+' => Ok(62),
+            b'/' => Ok(63),
+            _ => Err(format!("invalid base64 char {:?}", c as char)),
+        }
+    }
+    let bytes = s.as_bytes();
+    if !bytes.len().is_multiple_of(4) {
+        return Err("length not a multiple of 4".to_string());
+    }
+    let mut out = Vec::with_capacity(bytes.len() / 4 * 3);
+    for chunk in bytes.chunks(4) {
+        let pad = chunk.iter().filter(|&&c| c == b'=').count();
+        let mut n = 0u32;
+        for (i, &c) in chunk.iter().enumerate() {
+            let v = if c == b'=' { 0 } else { val(c)? };
+            n |= v << (18 - 6 * i);
+        }
+        out.push((n >> 16 & 0xff) as u8);
+        if pad < 2 {
+            out.push((n >> 8 & 0xff) as u8);
+        }
+        if pad < 1 {
+            out.push((n & 0xff) as u8);
+        }
+    }
+    Ok(out)
+// review note: decode must reject partial frames
