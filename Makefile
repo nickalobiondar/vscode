@@ -22,3 +22,14 @@ build-go:
 build-rust:
 	cd $(RUST_DIR) && cargo build --release
 
+test: test-go test-rust
+
+test-go:
+	cd $(GO_DIR) && go test ./...
+
+test-rust:
+	cd $(RUST_DIR) && cargo test
+
+fmt:
+	cd $(GO_DIR) && go fmt ./...
+	cd $(RUST_DIR) && cargo fmt
