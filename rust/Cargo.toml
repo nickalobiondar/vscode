@@ -4,3 +4,8 @@ version = "1.0.0"
 edition = "2021"
 description = "Schema inference and replay for the portsmith trace format"
 license = "MIT"
+
+[[bin]]
+name = "portsmith-replay"
+path = "src/main.rs"
+
