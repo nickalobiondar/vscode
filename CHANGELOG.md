@@ -8,3 +8,4 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - planning: TLS-aware capture mode for encrypted session plumbing
 
+## [1.0.0] - 2026-07-08
