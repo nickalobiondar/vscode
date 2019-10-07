@@ -11,3 +11,4 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.0.0] - 2026-07-08
 
 ### Added
+- **Trace format v1 frozen** - documented line-based, base64-framed trace format
