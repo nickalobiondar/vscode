@@ -12,3 +12,4 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 - **Trace format v1 frozen** - documented line-based, base64-framed trace format
+  shared by both tools (`docs/FORMAT.md`).
