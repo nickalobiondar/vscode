@@ -14,3 +14,4 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **Trace format v1 frozen** - documented line-based, base64-framed trace format
   shared by both tools (`docs/FORMAT.md`).
 - **`portcap` (Go)**: transparent TCP `capture` proxy recording both directions,
+  plus `normalize` for raw `> / <` session logs.
