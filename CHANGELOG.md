@@ -15,3 +15,4 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   shared by both tools (`docs/FORMAT.md`).
 - **`portcap` (Go)**: transparent TCP `capture` proxy recording both directions,
   plus `normalize` for raw `> / <` session logs.
+- **`portsmith-replay` (Rust)**: `replay` a capture against a recorded trace and
