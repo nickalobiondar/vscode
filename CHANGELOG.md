@@ -17,3 +17,4 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   plus `normalize` for raw `> / <` session logs.
 - **`portsmith-replay` (Rust)**: `replay` a capture against a recorded trace and
   diff the two; protocol `infer` for schema discovery.
+- Sample captures and traces for HTTP and RESP/Redis sessions.
