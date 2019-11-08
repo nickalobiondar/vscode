@@ -20,3 +20,4 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Sample captures and traces for HTTP and RESP/Redis sessions.
 
 ### Verified
+- `make test` green on both toolchains (go test -race, cargo test).
