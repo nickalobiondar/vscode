@@ -19,3 +19,4 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   diff the two; protocol `infer` for schema discovery.
 - Sample captures and traces for HTTP and RESP/Redis sessions.
 
+### Verified
