@@ -22,3 +22,4 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Verified
 - `make test` green on both toolchains (go test -race, cargo test).
 - gofmt / clippy / rustfmt clean.
+
