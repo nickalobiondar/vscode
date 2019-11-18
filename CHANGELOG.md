@@ -32,3 +32,4 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [0.5.0] - 2024-04-19
 
 ### Added
+- Go capture proxy with per-connection trace files
