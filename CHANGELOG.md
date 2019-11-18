@@ -27,3 +27,4 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 - deterministic `infer` output for line-based protocols
+- per-direction byte accounting in replay reports
