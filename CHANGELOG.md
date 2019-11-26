@@ -35,3 +35,4 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Go capture proxy with per-connection trace files
 - RESP/Redis normalization rules
 
+## [0.4.0] - 2022-11-02
