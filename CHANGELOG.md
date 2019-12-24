@@ -44,3 +44,4 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [0.3.0] - 2021-08-24
 
 ### Added
+- schema inference over captured sessions
