@@ -40,3 +40,4 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - replay diff mode with stable exit codes for CI
 - trace line framing hardened against partial writes
+
