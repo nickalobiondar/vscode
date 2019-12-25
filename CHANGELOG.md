@@ -48,3 +48,4 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - normalization pass with canonical timestamps
 
 ## [0.2.0] - 2020-03-12
+
