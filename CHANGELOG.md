@@ -46,3 +46,4 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - schema inference over captured sessions
 - normalization pass with canonical timestamps
+
