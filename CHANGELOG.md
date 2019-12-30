@@ -51,3 +51,4 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 - first Rust replay prototype
+- shared trace schema between Go and Rust
