@@ -50,3 +50,4 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [0.2.0] - 2020-03-12
 
 ### Added
+- first Rust replay prototype
