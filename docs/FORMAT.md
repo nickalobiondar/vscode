@@ -9,3 +9,10 @@ format designed to be trivially parseable with each language's standard library.
 ```
 #portsmith-trace v1        <- recommended magic header (a comment)
 # any number of comment lines beginning with '#'
+<record>
+<record>
+...
+```
+
+* Encoding: UTF-8.
+* Line separator: `\n`. A trailing `\r` is tolerated on read.
