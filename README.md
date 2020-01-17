@@ -165,3 +165,52 @@ $ portsmith-replay infer -in samples/redis.trace
 portsmith schema inference
 ==========================
 
+[redis request]
+  samples    : 3
+  encoding   : text
+  terminator : LF
+  length     : min=5 max=12 mean=8.7
+  tokens     :
+    GET              1
+    PING             1
+    SET              1
+
+[redis response]
+  samples    : 3
+  encoding   : text
+  terminator : LF
+  length     : min=4 max=6 mean=5.3
+  tokens     :
+    $2               1
+    +OK              1
+    +PONG            1
+```
+
+**4 &#183; Summarize the recording** with `stats` (counts, byte totals, distinct
+sessions, wall-clock span, protocol breakdown):
+
+```console
+$ portcap stats -in samples/redis.trace
+records:   6
+requests:  3
+responses: 3
+sessions:  1
+bytes:     42
+duration:  250ms
+protocols:
+  redis    6
+```
+
+**5 &#183; Replay the captured requests against a live server.** Only *request*
+records are sent; each line shows request/response byte counts and a preview, and
+a summary closes the run:
+
+```console
+$ portsmith-replay replay -in samples/redis.trace -target 127.0.0.1:6379
+[a1b2c3] 5 bytes -> 5 bytes | +PONG\r\n
+[a1b2c3] 12 bytes -> 5 bytes | +OK\r\n
+[a1b2c3] 9 bytes -> 9 bytes | $2\r\nhi\r\n
+replayed 3 request(s), 0 error(s), sent 26 byte(s), received 19 byte(s)
+```
+
+**6 &#183; Or clip the probe onto a live service** and record real traffic while a
