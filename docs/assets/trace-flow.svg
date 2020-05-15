@@ -69,3 +69,17 @@
       <text x="14" y="88"><tspan fill="#ff8a3d">V1</tspan> 1700000000050000000 <tspan fill="#ff8a3d">&lt;</tspan> a1b2c3 redis 6 <tspan fill="#e8fbff">K1BPTkcK</tspan></text>
       <text x="14" y="108"><tspan fill="#ff8a3d">V1</tspan> 1700000000100000000 <tspan fill="#3ff0e0">&gt;</tspan> a1b2c3 redis 12 <tspan fill="#e8fbff">U0VUIGtleTEgaGkK</tspan></text>
       <text x="14" y="128"><tspan fill="#ff8a3d">V1</tspan> 1700000000150000000 <tspan fill="#ff8a3d">&lt;</tspan> a1b2c3 redis 4 <tspan fill="#e8fbff">K09LCg==</tspan></text>
+      <text x="14" y="148"><tspan fill="#ff8a3d">V1</tspan> 1700000000200000000 <tspan fill="#3ff0e0">&gt;</tspan> a1b2c3 redis 9 <tspan fill="#e8fbff">R0VUIGtleTEK</tspan></text>
+      <text x="14" y="168"><tspan fill="#ff8a3d">V1</tspan> 1700000000250000000 <tspan fill="#ff8a3d">&lt;</tspan> a1b2c3 redis 6 <tspan fill="#e8fbff">JDIKaGkK</tspan></text>
+    </g>
+    <!-- field legend callout -->
+    <g font-size="9" fill="#546b80">
+      <text x="14" y="176" opacity="0"> </text>
+    </g>
+    <!-- highlight sweep across records -->
+    <rect x="8" y="56" width="424" height="16" fill="#3ff0e0" opacity="0.10">
+      <animate attributeName="y" values="56;56;76;96;116;136;156;56" dur="4.2s" repeatCount="indefinite"/>
+    </rect>
+  </g>
+
+  <!-- record field legend -->
