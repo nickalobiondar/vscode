@@ -80,3 +80,14 @@
       <animate attributeName="x2" from="0" to="1240" dur="5.5s" repeatCount="indefinite"/>
     </line>
   </g>
+
+  <!-- packets riding the wire, request (cyan) and response (orange) -->
+  <g>
+    <rect width="18" height="12" rx="2" fill="#3ff0e0" y="234">
+      <animateMotion dur="3.2s" repeatCount="indefinite"
+        path="M0,0 L1200,0"/>
+    </rect>
+    <rect width="14" height="10" rx="2" fill="#ff8a3d" y="236">
+      <animateMotion dur="3.9s" repeatCount="indefinite" begin="0.8s"
+        path="M0,0 L1200,0"/>
+    </rect>
