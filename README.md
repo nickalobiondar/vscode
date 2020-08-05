@@ -336,3 +336,52 @@ records charted into a schema, requests driven back onto the wire:
 Run any command with `-h` for its flags. Both tools accept `-` (or an omitted
 `-in`) to read from **stdin**, and Go's `-out`/Rust's stdout make them
 pipe-friendly:
+
+```sh
+portcap normalize -in samples/redis.log -proto redis | portsmith-replay infer -in -
+```
+
+---
+
+## Workflows
+
+**A · From a hand-written log to a schema.** Fastest way to sketch a protocol you
+can describe but not yet capture. Write a `> / <` log, normalize it, infer it.
+
+```sh
+portcap normalize -in session.log -proto myproto -out my.trace
+portsmith-replay infer -in my.trace
+```
+
+**B · From a live service to a replay.** Proxy the real service, capture genuine
+traffic, then replay it against a staging instance.
+
+```sh
+portcap capture -listen :9000 -target prod-box:6379 -proto redis -out cap.trace
+# ...drive a client at localhost:9000, then Ctrl-C...
+portcap stats  -in cap.trace                 # sanity-check what you recorded
+portsmith-replay replay -in cap.trace -target staging-box:6379
+```
+
+**C · Timing-faithful regression.** Preserve the original inter-request gaps
+(capped at 2 seconds per gap) to approximate the live cadence:
+
+```sh
+portsmith-replay replay -in cap.trace -target 127.0.0.1:6379 -timing -wait 1000
+```
+
+**D · Cross-language interop check** (the same one CI runs):
+
+```sh
+cd go && go run ./cmd/portcap normalize -in ../samples/redis.log \
+    -proto redis -session a1b2c3 -start 1700000000000000000 -step 50000000 \
+    -out ../samples/roundtrip.trace
+cd ../rust && cargo run --quiet -- infer -in ../samples/roundtrip.trace
+```
+
+---
+
+## Use cases
+
+- **Reverse-engineering an undocumented daemon.** Capture a real session, run
+  `infer`, and read off framing (LF/CRLF/none), text-vs-binary, and the
