@@ -7,3 +7,10 @@ format designed to be trivially parseable with each language's standard library.
 ## File structure
 
 ```
+#portsmith-trace v1        <- recommended magic header (a comment)
+# any number of comment lines beginning with '#'
+<record>
+<record>
+...
+```
+
