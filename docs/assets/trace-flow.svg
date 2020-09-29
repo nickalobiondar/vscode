@@ -50,3 +50,16 @@
 
   <!-- normalize arrow -->
   <g font-size="11" fill="#3ff0e0">
+    <line x1="312" y1="190" x2="392" y2="190" stroke="#3ff0e0" stroke-width="1.6" marker-end="url(#arrow)"/>
+    <text x="352" y="180" text-anchor="middle">normalize</text>
+    <circle cx="312" cy="190" r="3" fill="#3ff0e0">
+      <animate attributeName="cx" values="312;388;312" dur="2.4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1;0.2;1" dur="2.4s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <!-- ============ STAGE 2: trace records (base64) ============ -->
+  <g transform="translate(400,100)">
+    <rect width="440" height="180" rx="8" fill="#0b1a2c" stroke="#1d4b6e"/>
+    <rect width="440" height="26" rx="8" fill="#12283f"/>
+    <text x="14" y="18" font-size="12" fill="#3ff0e0">samples/redis.trace &#183; portsmith v1</text>
