@@ -76,3 +76,16 @@
     <g font-size="9" fill="#546b80">
       <text x="14" y="176" opacity="0"> </text>
     </g>
+    <!-- highlight sweep across records -->
+    <rect x="8" y="56" width="424" height="16" fill="#3ff0e0" opacity="0.10">
+      <animate attributeName="y" values="56;56;76;96;116;136;156;56" dur="4.2s" repeatCount="indefinite"/>
+    </rect>
+  </g>
+
+  <!-- record field legend -->
+  <g transform="translate(400,292)" font-size="9.5" fill="#7fa6c0">
+    <text x="14" y="0"><tspan fill="#ff8a3d">V1</tspan> = version &#160; ts_nanos &#160; <tspan fill="#3ff0e0">dir</tspan> &#160; session &#160; proto &#160; len &#160; <tspan fill="#e8fbff">base64(payload)</tspan> &#160; &#8212; split on first 6 spaces</text>
+  </g>
+
+  <!-- infer arrow (orange) -->
+  <g font-size="11" fill="#ff8a3d">
