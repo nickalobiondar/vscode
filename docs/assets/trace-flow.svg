@@ -89,3 +89,16 @@
 
   <!-- infer arrow (orange) -->
   <g font-size="11" fill="#ff8a3d">
+    <line x1="842" y1="190" x2="922" y2="190" stroke="#ff8a3d" stroke-width="1.6" marker-end="url(#arrowo)"/>
+    <text x="882" y="180" text-anchor="middle">infer</text>
+    <circle cx="842" cy="190" r="3" fill="#ff8a3d">
+      <animate attributeName="cx" values="842;918;842" dur="2.4s" begin="0.6s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1;0.2;1" dur="2.4s" begin="0.6s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <!-- ============ STAGE 3: inferred schema ============ -->
+  <g transform="translate(930,100)">
+    <rect width="230" height="180" rx="8" fill="#0b1a2c" stroke="#3a2a18"/>
+    <rect width="230" height="26" rx="8" fill="#2a1c0e"/>
+    <text x="14" y="18" font-size="12" fill="#ff8a3d">schema report</text>
