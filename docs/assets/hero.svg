@@ -19,3 +19,14 @@
     </radialGradient>
     <radialGradient id="orangeglow" cx="0.5" cy="0.5" r="0.5">
       <stop offset="0" stop-color="#ff8a3d" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#ff8a3d" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="2.2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="380" fill="url(#midnight)"/>
+
+  <!-- graticule / cartographer's grid -->
