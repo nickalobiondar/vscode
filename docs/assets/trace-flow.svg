@@ -26,3 +26,17 @@
   <rect width="1200" height="620" fill="url(#mid2)"/>
   <g stroke="#0f2438" stroke-width="1" opacity="0.6">
     <line x1="0" y1="155" x2="1200" y2="155"/>
+    <line x1="0" y1="310" x2="1200" y2="310"/>
+    <line x1="0" y1="465" x2="1200" y2="465"/>
+  </g>
+
+  <text x="40" y="46" font-size="22" font-weight="700" fill="#e8fbff">trace flow</text>
+  <text x="40" y="68" font-size="12" fill="#7fa6c0" letter-spacing="1">capture &#8594; normalize &#8594; infer &#8594; replay &#183; one line-based, base64-framed format</text>
+
+  <!-- ============ STAGE 1: raw session log ============ -->
+  <g transform="translate(40,100)">
+    <rect width="270" height="180" rx="8" fill="#0b1a2c" stroke="#1d4b6e"/>
+    <rect width="270" height="26" rx="8" fill="#12283f"/>
+    <text x="14" y="18" font-size="12" fill="#3ff0e0">samples/redis.log</text>
+    <g font-size="12.5" fill="#bfe8f2">
+      <text x="16" y="52"><tspan fill="#3ff0e0">&gt;</tspan> PING</text>
