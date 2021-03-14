@@ -29,3 +29,10 @@ V1 SP ts_nanos SP dir SP session SP proto SP len SP payload
 Fields are separated by a single ASCII space (`0x20`). The payload is the final
 field; because it is base64 it contains no spaces, so a decoder may split on the
 first six spaces (`splitn(7)`).
+
+| Field       | Type    | Description                                                    |
+|-------------|---------|----------------------------------------------------------------|
+| version     | literal | Always `V1` for this revision.                                 |
+| `ts_nanos`  | int64   | Timestamp in nanoseconds since the Unix epoch.                 |
+| `dir`       | enum    | `>` = request (client→server), `<` = response (server→client). |
+| `session`   | token   | Opaque session id, no spaces.                                  |
