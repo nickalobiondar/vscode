@@ -263,3 +263,52 @@ not match `len`**.
 
 Other rules both implementations honor: line separator is `\n` (a trailing `\r`
 is tolerated); blank/`#`-comment lines are ignored; the magic header is a comment
+(recommended, not required); base64 is *standard* (`+`/`/`, `=` padding), with the
+Rust side shipping its own known-answer-tested codec so it needs no crates; and
+future revisions bump the version tag (`V2`, …) rather than being guessed at.
+
+---
+
+## Architecture
+
+The `*.trace` file is the waist of the hourglass: Go writes it, Rust reads it,
+and nothing else crosses the boundary.
+
+```mermaid
+flowchart LR
+    client([Client]) -->|TCP| proxy
+    subgraph GO["portcap · Go"]
+        proxy[capture proxy] --> tw[trace.Writer]
+        norm[normalize] --> tw
+        stats[stats]
+    end
+    proxy -->|TCP| server([Upstream service])
+    log[[raw > / < log]] --> norm
+    tw -->|writes| trace[["*.trace<br/>portsmith v1"]]
+
+    trace -->|reads| infer
+    subgraph RS["portsmith-replay · Rust"]
+        infer[schema infer] --> report[[schema report]]
+        catcmd[cat]
+        replaycmd[replay engine]
+    end
+    trace --> catcmd
+    trace --> stats
+    trace --> replaycmd
+    replaycmd -->|TCP| target([Replay target])
+```
+
+*(Mermaid is used sparingly here; the animated SVGs below carry the visual load.)*
+
+---
+
+## Trace flow
+
+The full pipeline as a workshop schematic — raw log tidied into base64 records,
+records charted into a schema, requests driven back onto the wire:
+
+<p align="center">
+  <img src="docs/assets/trace-flow.svg" alt="portsmith trace flow: a raw redis.log is normalized into base64 trace records, inferred into a schema report, and replayed against a live target in a terminal" width="100%">
+</p>
+
+---
