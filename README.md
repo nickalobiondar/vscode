@@ -80,3 +80,52 @@ you do not, and optimizes for the *discovery loop*:
 ---
 
 ## The two instruments
+
+| Instrument | Language | Role on the bench | Subcommands |
+|------------|----------|-------------------|-------------|
+| **`portcap`** | Go | The probe &amp; recorder. Sits in front of a TCP service as a transparent proxy and records both directions; also normalizes loose logs and summarizes traces. | `capture`, `normalize`, `stats`, `version` |
+| **`portsmith-replay`** | Rust | The scope &amp; signal generator. Reads a trace, infers the protocol's structure, pretty-prints it, and replays captured requests against a live target. | `infer`, `replay`, `cat`, `version` |
+
+Both tools report version `1.0.0`.
+
+---
+
+## Install &amp; build
+
+Prerequisites: **Go 1.24** and a **stable Rust toolchain** (`cargo`).
+
+```sh
+make build        # builds the Go binary (bin/portcap) and the Rust release binary
+make test         # runs `go test ./...` and `cargo test`
+```
+
+Prefer to drive each toolchain yourself:
+
+```sh
+cd go   && go build -o ../bin/portcap ./cmd/portcap
+cd rust && cargo build --release        # target/release/portsmith-replay
+```
+
+Other Makefile targets that mirror CI:
+
+```sh
+make fmt     # go fmt ./...            + cargo fmt
+make vet     # go vet ./...            + cargo check
+make demo    # regenerate samples/redis.trace, then infer it
+make clean   # remove bin/ and cargo artifacts
+```
+
+CI (`.github/workflows/ci.yml`) runs three jobs: **Go** (gofmt check, `go vet`,
+build, `go test -race`), **Rust** (`cargo fmt --check`, `clippy -D warnings`,
+release build, `cargo test`), and a **cross-language interop** job that
+normalizes a log with Go and infers it with Rust — proving the format contract
+holds across both implementations.
+
+> Transcripts below use bare `portcap` / `portsmith-replay` names. Substitute
+> `bin/portcap` and `target/release/portsmith-replay`, or add them to `PATH`.
+
+---
+
+## Bench session (annotated transcript)
+
+A complete loop on the bundled Redis sample — no Redis-specific code anywhere in
