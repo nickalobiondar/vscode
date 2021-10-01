@@ -104,3 +104,52 @@ Prefer to drive each toolchain yourself:
 ```sh
 cd go   && go build -o ../bin/portcap ./cmd/portcap
 cd rust && cargo build --release        # target/release/portsmith-replay
+```
+
+Other Makefile targets that mirror CI:
+
+```sh
+make fmt     # go fmt ./...            + cargo fmt
+make vet     # go vet ./...            + cargo check
+make demo    # regenerate samples/redis.trace, then infer it
+make clean   # remove bin/ and cargo artifacts
+```
+
+CI (`.github/workflows/ci.yml`) runs three jobs: **Go** (gofmt check, `go vet`,
+build, `go test -race`), **Rust** (`cargo fmt --check`, `clippy -D warnings`,
+release build, `cargo test`), and a **cross-language interop** job that
+normalizes a log with Go and infers it with Rust — proving the format contract
+holds across both implementations.
+
+> Transcripts below use bare `portcap` / `portsmith-replay` names. Substitute
+> `bin/portcap` and `target/release/portsmith-replay`, or add them to `PATH`.
+
+---
+
+## Bench session (annotated transcript)
+
+A complete loop on the bundled Redis sample — no Redis-specific code anywhere in
+portsmith.
+
+**1 &#183; Normalize a raw session log into a canonical trace.** The `redis.log`
+uses `>` for client lines and `<` for server lines; consecutive same-direction
+lines are coalesced into one record and timestamps are synthesized from
+`-start` stepping by `-step`.
+
+```console
+$ portcap normalize -in samples/redis.log -proto redis -session a1b2c3 \
+      -start 1700000000000000000 -step 50000000 -out samples/redis.trace
+# normalized 6 records
+```
+
+**2 &#183; Read the trace back as escaped, human-readable text** (`cat` shows the
+nanosecond timestamp, direction arrow, session, proto, and a control-escaped
+preview of up to 64 payload bytes):
+
+```console
+$ portsmith-replay cat -in samples/redis.trace
+ 1700000000000000000 -> a1b2c3     redis  PING\n
+ 1700000000050000000 <- a1b2c3     redis  +PONG\n
+ 1700000000100000000 -> a1b2c3     redis  SET key1 hi\n
+ 1700000000150000000 <- a1b2c3     redis  +OK\n
+ 1700000000200000000 -> a1b2c3     redis  GET key1\n
