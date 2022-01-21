@@ -312,3 +312,51 @@ records charted into a schema, requests driven back onto the wire:
 </p>
 
 ---
+
+## Command reference
+
+### `portcap` (Go)
+
+| Command | Purpose | Key flags |
+|---------|---------|-----------|
+| `capture` | Transparent TCP proxy; records both directions to a trace. | `-listen` (default `:9000`), `-target` (**required**, `host:port`), `-proto` (default `tcp`), `-out` (default `-` = stdout), `-max` (stop after N connections; `0` = unlimited) |
+| `normalize` | Convert a `> / <` raw session log into a canonical trace. | `-in` (default `-` = stdin), `-proto` (default `raw`), `-session` (default `norm0001`), `-out` (default `-`), `-start` (default: now, unix nanos), `-step` (default `1ms` in nanos) |
+| `stats` | Summarize a trace: records, requests/responses, sessions, bytes, duration, protocol breakdown. | `-in` (default `-`) |
+| `version` | Print `portcap 1.0.0`. | — |
+
+### `portsmith-replay` (Rust)
+
+| Command | Purpose | Key flags |
+|---------|---------|-----------|
+| `infer` | Heuristically discover the schema of each `(proto, direction)` group. | `-in` (default `-` = stdin) |
+| `replay` | Send captured **requests** to a target; collect responses. | `-target` (**required**), `-timing` (preserve inter-request delays, capped at 2s), `-timeout` (per-read timeout ms, default `200`), `-wait` (max wait for a response ms, default `500`), `-in` (default `-`) |
+| `cat` | Pretty-print a trace with control characters escaped. | `-in` (default `-`) |
+| `version` | Print `portsmith-replay 1.0.0`. | — |
+
+Run any command with `-h` for its flags. Both tools accept `-` (or an omitted
+`-in`) to read from **stdin**, and Go's `-out`/Rust's stdout make them
+pipe-friendly:
+
+```sh
+portcap normalize -in samples/redis.log -proto redis | portsmith-replay infer -in -
+```
+
+---
+
+## Workflows
+
+**A · From a hand-written log to a schema.** Fastest way to sketch a protocol you
+can describe but not yet capture. Write a `> / <` log, normalize it, infer it.
+
+```sh
+portcap normalize -in session.log -proto myproto -out my.trace
+portsmith-replay infer -in my.trace
+```
+
+**B · From a live service to a replay.** Proxy the real service, capture genuine
+traffic, then replay it against a staging instance.
+
+```sh
+portcap capture -listen :9000 -target prod-box:6379 -proto redis -out cap.trace
+# ...drive a client at localhost:9000, then Ctrl-C...
+portcap stats  -in cap.trace                 # sanity-check what you recorded
