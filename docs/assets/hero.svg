@@ -97,3 +97,14 @@
     </rect>
   </g>
 
+  <!-- pipeline stages as scope stations -->
+  <g font-size="13" text-anchor="middle">
+    <g transform="translate(180,335)">
+      <circle r="5" fill="#3ff0e0"><animate attributeName="r" values="4;6.5;4" dur="2s" repeatCount="indefinite"/></circle>
+      <text y="26" fill="#bfe8f2">capture</text>
+    </g>
+    <g transform="translate(450,335)">
+      <circle r="5" fill="#3ff0e0"><animate attributeName="r" values="4;6.5;4" dur="2s" begin="0.5s" repeatCount="indefinite"/></circle>
+      <text y="26" fill="#bfe8f2">normalize</text>
+    </g>
+    <g transform="translate(760,335)">
