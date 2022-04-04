@@ -88,3 +88,15 @@
         path="M0,0 L1200,0"/>
     </rect>
     <rect width="14" height="10" rx="2" fill="#ff8a3d" y="236">
+      <animateMotion dur="3.9s" repeatCount="indefinite" begin="0.8s"
+        path="M0,0 L1200,0"/>
+    </rect>
+    <rect width="16" height="11" rx="2" fill="#3ff0e0" y="235" opacity="0.8">
+      <animateMotion dur="3.5s" repeatCount="indefinite" begin="1.7s"
+        path="M0,0 L1200,0"/>
+    </rect>
+  </g>
+
+  <!-- pipeline stages as scope stations -->
+  <g font-size="13" text-anchor="middle">
+    <g transform="translate(180,335)">
