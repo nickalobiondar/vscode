@@ -63,3 +63,15 @@
   </g>
 
   <!-- animated waveform: the "signal under test" sweeping across -->
+  <g filter="url(#soft)">
+    <path fill="none" stroke="url(#cyanline)" stroke-width="2.4"
+      d="M0,240 L120,240 L140,196 L170,196 L190,282 L220,282 L240,240 L360,240 L380,206 L420,206 L440,240 L520,240 L540,168 L560,300 L580,168 L600,240 L720,240 L740,214 L800,214 L820,240 L900,240 L920,190 L960,290 L980,190 L1000,240 L1200,240">
+      <animate attributeName="opacity" values="0.55;1;0.55" dur="4s" repeatCount="indefinite"/>
+    </path>
+  </g>
+
+  <!-- moving scan beam over the waveform -->
+  <g>
+    <rect x="-40" y="150" width="40" height="180" fill="url(#glow)" opacity="0.5">
+      <animate attributeName="x" from="-40" to="1200" dur="5.5s" repeatCount="indefinite"/>
+    </rect>
