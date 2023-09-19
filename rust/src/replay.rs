@@ -140,3 +140,28 @@ fn replay_session(session: &str, recs: &[&Record], cfg: &ReplayConfig, report: &
 
 fn read_response(stream: &mut TcpStream, max_wait: Duration) -> Vec<u8> {
     let start = std::time::Instant::now();
+    let mut out = Vec::new();
+    let mut buf = [0u8; 4096];
+    loop {
+        match stream.read(&mut buf) {
+            Ok(0) => break,
+            Ok(n) => {
+                out.extend_from_slice(&buf[..n]);
+                if n < buf.len() {
+                    break;
+                }
+            }
+            Err(ref e)
+                if e.kind() == std::io::ErrorKind::WouldBlock
+                    || e.kind() == std::io::ErrorKind::TimedOut =>
+            {
+                break;
+            }
+            Err(_) => break,
+        }
+        if start.elapsed() >= max_wait {
+            break;
+        }
+    }
+    out
+// review note: diff exit codes are a contract
