@@ -41,3 +41,10 @@ first six spaces (`splitn(7)`).
 | `payload`   | base64  | Standard base64 (`+`/`/`, `=` padding) of the raw bytes.       |
 
 ### Validation rules
+
+A decoder MUST reject a record when:
+
+* the line does not split into exactly 7 fields;
+* the version is not `V1`;
+* `ts_nanos` is not a valid int64;
+* `dir` is neither `>` nor `<`;
