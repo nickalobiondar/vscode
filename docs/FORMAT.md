@@ -11,3 +11,9 @@ format designed to be trivially parseable with each language's standard library.
 # any number of comment lines beginning with '#'
 <record>
 <record>
+...
+```
+
+* Encoding: UTF-8.
+* Line separator: `\n`. A trailing `\r` is tolerated on read.
+* Blank lines are ignored.
