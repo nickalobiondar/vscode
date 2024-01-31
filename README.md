@@ -421,3 +421,52 @@ These are signals, not certainties — see [Limitations](#limitations).
 ## How replay actually works
 
 `replay` groups records by session (preserving first-appearance order) and opens
+**one TCP connection per session**. Within a session it walks records in order
+and, for each **request**, writes the payload, flushes, then reads whatever the
+server returns before moving on — tracking byte counts and a response preview.
+
+The read window is bounded two ways: a per-read socket timeout (`-timeout`,
+default 200 ms) and an overall wait per request (`-wait`, default 500 ms). Reads
+stop early on a short read, EOF, or would-block/timeout. With `-timing`, the
+replayer sleeps the original inter-record gap before each request, capped at 2 s
+so a stale trace cannot stall the run.
+
+Per-request failures (connect/write) are captured as errors in the report rather
+than aborting the run; the process exits non-zero if any occurred. Response
+records in the input are **not** sent — replay drives only the request side.
+
+---
+
+## Design choices
+
+- **Why base64 payloads?** Payloads are arbitrary bytes — binary protocols,
+  embedded NULs, non-UTF-8. Base64 keeps every record on a single ASCII-clean line
+  that survives `grep`, `diff`, and copy-paste.
+- **Why a redundant `len`?** A cheap integrity check and forward-compatible
+  framing: a reader detects truncation before it allocates, and the decoder
+  hard-fails on any mismatch.
+- **Why nanoseconds?** High-resolution ordering and faithful timing replay.
+- **Why two languages?** Capture is a concurrency/I/O problem (the proxy uses a
+  goroutine per direction with a mutex-guarded writer); inference and replay are a
+  parsing/state problem (Rust's exhaustive matching and ownership). Splitting them
+  keeps each half small and idiomatic.
+- **Why no dependencies?** Every line — including the base64 codec — is in-tree
+  and testable, which is the whole point of a tool you use to understand *other*
+  systems. Clippy runs `-D warnings`; the Go build is race-tested in CI.
+
+---
+
+## Comparison
+
+Rough positioning — portsmith is intentionally narrow.
+
+| Capability | **portsmith** | tcpdump / Wireshark | mitmproxy | Custom scripts |
+|---|:--:|:--:|:--:|:--:|
+| Capture live TCP traffic | ✅ app-level proxy | ✅ packet-level | ✅ HTTP(S) focus | ⚠️ you build it |
+| Human-readable, greppable trace | ✅ base64 text | ⚠️ pcap (binary) | ⚠️ flows/pcap | ⚠️ varies |
+| Protocol-agnostic (no dissectors) | ✅ | ⚠️ needs dissector | ❌ HTTP-centric | ⚠️ varies |
+| Heuristic schema inference | ✅ text/binary, framing, tokens | ❌ | ❌ | ❌ |
+| Replay requests to a live target | ✅ with optional timing | ❌ | ⚠️ limited | ⚠️ varies |
+| Zero third-party dependencies | ✅ | ❌ | ❌ | ⚠️ varies |
+| Scope | line-oriented req/resp | all packets | web traffic | anything |
+
