@@ -141,3 +141,52 @@ $ portcap normalize -in samples/redis.log -proto redis -session a1b2c3 \
       -start 1700000000000000000 -step 50000000 -out samples/redis.trace
 # normalized 6 records
 ```
+
+**2 &#183; Read the trace back as escaped, human-readable text** (`cat` shows the
+nanosecond timestamp, direction arrow, session, proto, and a control-escaped
+preview of up to 64 payload bytes):
+
+```console
+$ portsmith-replay cat -in samples/redis.trace
+ 1700000000000000000 -> a1b2c3     redis  PING\n
+ 1700000000050000000 <- a1b2c3     redis  +PONG\n
+ 1700000000100000000 -> a1b2c3     redis  SET key1 hi\n
+ 1700000000150000000 <- a1b2c3     redis  +OK\n
+ 1700000000200000000 -> a1b2c3     redis  GET key1\n
+ 1700000000250000000 <- a1b2c3     redis  $2\nhi\n
+```
+
+**3 &#183; Chart the protocol's structure.** Inference groups records by
+`(proto, direction)` and reports encoding, terminator, length statistics, and the
+leading-token histogram (sorted by count, then name):
+
+```console
+$ portsmith-replay infer -in samples/redis.trace
+portsmith schema inference
+==========================
+
+[redis request]
+  samples    : 3
+  encoding   : text
+  terminator : LF
+  length     : min=5 max=12 mean=8.7
+  tokens     :
+    GET              1
+    PING             1
+    SET              1
+
+[redis response]
+  samples    : 3
+  encoding   : text
+  terminator : LF
+  length     : min=4 max=6 mean=5.3
+  tokens     :
+    $2               1
+    +OK              1
+    +PONG            1
+```
+
+**4 &#183; Summarize the recording** with `stats` (counts, byte totals, distinct
+sessions, wall-clock span, protocol breakdown):
+
+```console
