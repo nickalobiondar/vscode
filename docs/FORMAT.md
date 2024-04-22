@@ -46,3 +46,10 @@ A decoder MUST reject a record when:
 
 * the line does not split into exactly 7 fields;
 * the version is not `V1`;
+* `ts_nanos` is not a valid int64;
+* `dir` is neither `>` nor `<`;
+* `len` is not a valid non-negative integer;
+* the payload is not valid standard base64;
+* the decoded payload length does not equal `len`.
+
+The `len` field is redundant with the base64 payload on purpose: it lets a reader
