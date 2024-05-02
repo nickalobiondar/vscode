@@ -53,3 +53,9 @@ A decoder MUST reject a record when:
 * the decoded payload length does not equal `len`.
 
 The `len` field is redundant with the base64 payload on purpose: it lets a reader
+cheaply detect truncation or corruption before allocating.
+
+## Example
+
+```
+#portsmith-trace v1
