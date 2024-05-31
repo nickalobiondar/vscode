@@ -27,3 +27,14 @@
     </filter>
   </defs>
 
+  <rect width="1200" height="380" fill="url(#midnight)"/>
+
+  <!-- graticule / cartographer's grid -->
+  <g stroke="#14304a" stroke-width="1" opacity="0.55">
+    <line x1="0" y1="60" x2="1200" y2="60"/>
+    <line x1="0" y1="120" x2="1200" y2="120"/>
+    <line x1="0" y1="180" x2="1200" y2="180"/>
+    <line x1="0" y1="240" x2="1200" y2="240"/>
+    <line x1="0" y1="300" x2="1200" y2="300"/>
+    <line x1="150" y1="0" x2="150" y2="380"/>
+    <line x1="300" y1="0" x2="300" y2="380"/>
