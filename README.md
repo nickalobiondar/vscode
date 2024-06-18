@@ -202,3 +202,52 @@ protocols:
 ```
 
 **5 &#183; Replay the captured requests against a live server.** Only *request*
+records are sent; each line shows request/response byte counts and a preview, and
+a summary closes the run:
+
+```console
+$ portsmith-replay replay -in samples/redis.trace -target 127.0.0.1:6379
+[a1b2c3] 5 bytes -> 5 bytes | +PONG\r\n
+[a1b2c3] 12 bytes -> 5 bytes | +OK\r\n
+[a1b2c3] 9 bytes -> 9 bytes | $2\r\nhi\r\n
+replayed 3 request(s), 0 error(s), sent 26 byte(s), received 19 byte(s)
+```
+
+**6 &#183; Or clip the probe onto a live service** and record real traffic while a
+client talks through the proxy:
+
+```console
+$ portcap capture -listen :9000 -target 127.0.0.1:6379 -proto redis -out cap.trace
+# capturing :9000 -> 127.0.0.1:6379 (proto=redis) to cap.trace
+# ...point a client at localhost:9000...
+```
+
+---
+
+## The trace format, walked field by field
+
+The trace is the single contract between the two tools. It is line-oriented
+UTF-8 so both standard libraries can parse it trivially. The authoritative spec
+lives in [`docs/FORMAT.md`](docs/FORMAT.md); here is the working reading of it.
+
+A file is a recommended magic comment, any number of comments/blank lines, then
+one record per line:
+
+```
+#portsmith-trace v1
+V1 1700000000000000000 > a1b2c3 redis 5 UElORwo=
+V1 1700000000050000000 < a1b2c3 redis 6 K1BPTkcK
+```
+
+Each record is seven space-separated fields. Because the payload is base64 it
+contains no spaces, so a decoder splits on the **first six spaces** (`splitn(7)`):
+
+```
+V1   1700000000000000000   >   a1b2c3   redis   5   UElORwo=
+│    │                     │   │        │       │   │
+│    │                     │   │        │       │   └─ payload  base64(raw bytes) → "PING\n"
+│    │                     │   │        │       └───── len      decimal length of the DECODED payload (5)
+│    │                     │   │        └───────────── proto    protocol hint: tcp | http | redis | raw | …
+│    │                     │   └────────────────────── session  opaque id, no spaces
+│    │                     └────────────────────────── dir      ">" request (client→server) | "<" response
+│    └──────────────────────────────────────────────── ts_nanos int64 nanoseconds since the Unix epoch
