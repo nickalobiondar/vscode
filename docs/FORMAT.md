@@ -36,3 +36,10 @@ first six spaces (`splitn(7)`).
 | `ts_nanos`  | int64   | Timestamp in nanoseconds since the Unix epoch.                 |
 | `dir`       | enum    | `>` = request (client→server), `<` = response (server→client). |
 | `session`   | token   | Opaque session id, no spaces.                                  |
+| `proto`     | token   | Protocol hint: `tcp`, `http`, `redis`, `raw`, …                |
+| `len`       | int     | Decimal byte length of the **decoded** payload.                |
+| `payload`   | base64  | Standard base64 (`+`/`/`, `=` padding) of the raw bytes.       |
+
+### Validation rules
+
+A decoder MUST reject a record when:
