@@ -112,3 +112,16 @@
       <text x="14" y="156" fill="#e8fbff">GET&#160;1 &#160;PING&#160;1 &#160;SET&#160;1</text>
     </g>
   </g>
+
+  <!-- ============ STAGE 4: replay terminal ============ -->
+  <g transform="translate(40,350)">
+    <rect width="1120" height="240" rx="10" fill="#07101d" stroke="#1d4b6e"/>
+    <rect width="1120" height="30" rx="10" fill="#0f2438"/>
+    <circle cx="22" cy="15" r="5" fill="#ff5f56"/>
+    <circle cx="42" cy="15" r="5" fill="#ffbd2e"/>
+    <circle cx="62" cy="15" r="5" fill="#27c93f"/>
+    <text x="560" y="19" text-anchor="middle" font-size="11" fill="#7fa6c0">portsmith-replay &#183; replay engine</text>
+
+    <g font-size="13" font-family="ui-monospace, monospace">
+      <text x="20" y="62" fill="#3ff0e0">$ <tspan fill="#e8fbff">portsmith-replay replay -in samples/redis.trace -target 127.0.0.1:6379</tspan></text>
+
