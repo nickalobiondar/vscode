@@ -72,3 +72,14 @@
 
   <!-- moving scan beam over the waveform -->
   <g>
+    <rect x="-40" y="150" width="40" height="180" fill="url(#glow)" opacity="0.5">
+      <animate attributeName="x" from="-40" to="1200" dur="5.5s" repeatCount="indefinite"/>
+    </rect>
+    <line x1="0" y1="150" x2="0" y2="330" stroke="#3ff0e0" stroke-width="1.5" opacity="0.7">
+      <animate attributeName="x1" from="0" to="1240" dur="5.5s" repeatCount="indefinite"/>
+      <animate attributeName="x2" from="0" to="1240" dur="5.5s" repeatCount="indefinite"/>
+    </line>
+  </g>
+
+  <!-- packets riding the wire, request (cyan) and response (orange) -->
+  <g>
