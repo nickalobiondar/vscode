@@ -75,3 +75,21 @@ fn infer_detects_text_and_tokens() {
     let g = &schema.groups[0];
     assert_eq!(g.encoding, Encoding::Text);
     assert_eq!(g.terminator, "CRLF");
+    assert_eq!(g.samples, 3);
+    // GET appears twice and should be the top token.
+    assert_eq!(g.top_tokens[0].0, "GET");
+    assert_eq!(g.top_tokens[0].1, 2);
+}
+
+#[test]
+fn infer_detects_binary() {
+    let recs = vec![Record {
+        ts_nanos: 1,
+        dir: Direction::Response,
+        session: "a".into(),
+        proto: "raw".into(),
+        payload: vec![0x00, 0x01, 0x02, 0xff, 0xfe, 0x80, 0x90],
+    }];
+    let schema = infer(&recs);
+    assert_eq!(schema.groups[0].encoding, Encoding::Binary);
+}
