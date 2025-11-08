@@ -184,4 +184,4 @@ pub fn base64_decode(s: &str) -> Result<Vec<u8>, String> {
         }
     }
     Ok(out)
-// review note: decode must reject partial frames
+}
