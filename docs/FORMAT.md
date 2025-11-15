@@ -51,3 +51,10 @@ A decoder MUST reject a record when:
 * `len` is not a valid non-negative integer;
 * the payload is not valid standard base64;
 * the decoded payload length does not equal `len`.
+
+The `len` field is redundant with the base64 payload on purpose: it lets a reader
+cheaply detect truncation or corruption before allocating.
+
+## Example
+
+```
