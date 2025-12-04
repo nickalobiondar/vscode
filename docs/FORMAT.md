@@ -64,3 +64,19 @@ V1 1700000000050000000 < a1b2c3 redis 6 K1BPTkcK
 ```
 
 Decoded:
+
+```
+[a1b2c3] request  redis  "PING\n"
+[a1b2c3] response redis  "+PONG\n"
+```
+
+## Design notes
+
+* **Why base64?** Payloads are arbitrary bytes (binary protocols, embedded NULs).
+  Base64 keeps every record on a single line and ASCII-clean.
+* **Why a redundant length?** Cheap integrity check and forward-compatible framing.
+* **Why nanoseconds?** High-resolution ordering and faithful timing replay.
+* **Forward compatibility:** future revisions will use a new version tag
+  (`V2`, …). Decoders reject unknown versions rather than guessing.
+
+<!-- format review by HugoZimmermann9128: framing notes -->
