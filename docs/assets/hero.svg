@@ -13,3 +13,15 @@
       <stop offset="0.5" stop-color="#3ff0e0"/>
       <stop offset="1" stop-color="#0aa9c2" stop-opacity="0.1"/>
     </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#3ff0e0" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#3ff0e0" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="orangeglow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ff8a3d" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#ff8a3d" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="2.2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
