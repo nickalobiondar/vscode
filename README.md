@@ -287,3 +287,296 @@ flowchart LR
     tw -->|writes| trace[["*.trace<br/>portsmith v1"]]
 
     trace -->|reads| infer
+    subgraph RS["portsmith-replay · Rust"]
+        infer[schema infer] --> report[[schema report]]
+        catcmd[cat]
+        replaycmd[replay engine]
+    end
+    trace --> catcmd
+    trace --> stats
+    trace --> replaycmd
+    replaycmd -->|TCP| target([Replay target])
+```
+
+*(Mermaid is used sparingly here; the animated SVGs below carry the visual load.)*
+
+---
+
+## Trace flow
+
+The full pipeline as a workshop schematic — raw log tidied into base64 records,
+records charted into a schema, requests driven back onto the wire:
+
+<p align="center">
+  <img src="docs/assets/trace-flow.svg" alt="portsmith trace flow: a raw redis.log is normalized into base64 trace records, inferred into a schema report, and replayed against a live target in a terminal" width="100%">
+</p>
+
+---
+
+## Command reference
+
+### `portcap` (Go)
+
+| Command | Purpose | Key flags |
+|---------|---------|-----------|
+| `capture` | Transparent TCP proxy; records both directions to a trace. | `-listen` (default `:9000`), `-target` (**required**, `host:port`), `-proto` (default `tcp`), `-out` (default `-` = stdout), `-max` (stop after N connections; `0` = unlimited) |
+| `normalize` | Convert a `> / <` raw session log into a canonical trace. | `-in` (default `-` = stdin), `-proto` (default `raw`), `-session` (default `norm0001`), `-out` (default `-`), `-start` (default: now, unix nanos), `-step` (default `1ms` in nanos) |
+| `stats` | Summarize a trace: records, requests/responses, sessions, bytes, duration, protocol breakdown. | `-in` (default `-`) |
+| `version` | Print `portcap 1.0.0`. | — |
+
+### `portsmith-replay` (Rust)
+
+| Command | Purpose | Key flags |
+|---------|---------|-----------|
+| `infer` | Heuristically discover the schema of each `(proto, direction)` group. | `-in` (default `-` = stdin) |
+| `replay` | Send captured **requests** to a target; collect responses. | `-target` (**required**), `-timing` (preserve inter-request delays, capped at 2s), `-timeout` (per-read timeout ms, default `200`), `-wait` (max wait for a response ms, default `500`), `-in` (default `-`) |
+| `cat` | Pretty-print a trace with control characters escaped. | `-in` (default `-`) |
+| `version` | Print `portsmith-replay 1.0.0`. | — |
+
+Run any command with `-h` for its flags. Both tools accept `-` (or an omitted
+`-in`) to read from **stdin**, and Go's `-out`/Rust's stdout make them
+pipe-friendly:
+
+```sh
+portcap normalize -in samples/redis.log -proto redis | portsmith-replay infer -in -
+```
+
+---
+
+## Workflows
+
+**A · From a hand-written log to a schema.** Fastest way to sketch a protocol you
+can describe but not yet capture. Write a `> / <` log, normalize it, infer it.
+
+```sh
+portcap normalize -in session.log -proto myproto -out my.trace
+portsmith-replay infer -in my.trace
+```
+
+**B · From a live service to a replay.** Proxy the real service, capture genuine
+traffic, then replay it against a staging instance.
+
+```sh
+portcap capture -listen :9000 -target prod-box:6379 -proto redis -out cap.trace
+# ...drive a client at localhost:9000, then Ctrl-C...
+portcap stats  -in cap.trace                 # sanity-check what you recorded
+portsmith-replay replay -in cap.trace -target staging-box:6379
+```
+
+**C · Timing-faithful regression.** Preserve the original inter-request gaps
+(capped at 2 seconds per gap) to approximate the live cadence:
+
+```sh
+portsmith-replay replay -in cap.trace -target 127.0.0.1:6379 -timing -wait 1000
+```
+
+**D · Cross-language interop check** (the same one CI runs):
+
+```sh
+cd go && go run ./cmd/portcap normalize -in ../samples/redis.log \
+    -proto redis -session a1b2c3 -start 1700000000000000000 -step 50000000 \
+    -out ../samples/roundtrip.trace
+cd ../rust && cargo run --quiet -- infer -in ../samples/roundtrip.trace
+```
+
+---
+
+## Use cases
+
+- **Reverse-engineering an undocumented daemon.** Capture a real session, run
+  `infer`, and read off framing (LF/CRLF/none), text-vs-binary, and the
+  verb/method vocabulary before writing any client code.
+- **Regression &amp; smoke tests for line protocols.** Freeze a known-good session
+  as a trace and replay it against each new build.
+- **Load/soak stimulus.** Replay a representative trace to keep a service warm or
+  exercise a code path repeatedly.
+- **Documentation from evidence.** Turn a trace into a `cat` transcript and an
+  `infer` report that describe what the protocol *actually* does.
+- **Teaching &amp; demos.** The HTTP and Redis samples are a self-contained lesson
+  in framing, base64, and request/response structure.
+
+---
+
+## How inference actually works
+
+Inference is heuristic and dependency-free. Records are grouped by
+`(proto, direction)`, and for each group `portsmith-replay` computes:
+
+- **Encoding — text vs binary.** A payload is "printable" when at least 90% of its
+  bytes are printable ASCII (plus tab/CR/LF); empty payloads count as printable. A
+  group is **text** when at least 80% of its samples are printable, else **binary**.
+- **Terminator — CRLF / LF / none.** Votes on how many payloads end in `\r\n`
+  versus a bare `\n`: **CRLF** when CRLF is at least as common as LF and covers at
+  least half the samples, **LF** when LF covers at least half, else **none**.
+- **Length statistics.** `min`, `max`, and `mean` of decoded payload byte lengths.
+- **Leading-token histogram.** The first whitespace-delimited token of each
+  textual payload (e.g. HTTP methods, Redis verbs), capped at 32 bytes so binary
+  noise never becomes a "token". Tokens are sorted by count descending, then name,
+  and the top 8 are shown.
+
+These are signals, not certainties — see [Limitations](#limitations).
+
+---
+
+## How replay actually works
+
+`replay` groups records by session (preserving first-appearance order) and opens
+**one TCP connection per session**. Within a session it walks records in order
+and, for each **request**, writes the payload, flushes, then reads whatever the
+server returns before moving on — tracking byte counts and a response preview.
+
+The read window is bounded two ways: a per-read socket timeout (`-timeout`,
+default 200 ms) and an overall wait per request (`-wait`, default 500 ms). Reads
+stop early on a short read, EOF, or would-block/timeout. With `-timing`, the
+replayer sleeps the original inter-record gap before each request, capped at 2 s
+so a stale trace cannot stall the run.
+
+Per-request failures (connect/write) are captured as errors in the report rather
+than aborting the run; the process exits non-zero if any occurred. Response
+records in the input are **not** sent — replay drives only the request side.
+
+---
+
+## Design choices
+
+- **Why base64 payloads?** Payloads are arbitrary bytes — binary protocols,
+  embedded NULs, non-UTF-8. Base64 keeps every record on a single ASCII-clean line
+  that survives `grep`, `diff`, and copy-paste.
+- **Why a redundant `len`?** A cheap integrity check and forward-compatible
+  framing: a reader detects truncation before it allocates, and the decoder
+  hard-fails on any mismatch.
+- **Why nanoseconds?** High-resolution ordering and faithful timing replay.
+- **Why two languages?** Capture is a concurrency/I/O problem (the proxy uses a
+  goroutine per direction with a mutex-guarded writer); inference and replay are a
+  parsing/state problem (Rust's exhaustive matching and ownership). Splitting them
+  keeps each half small and idiomatic.
+- **Why no dependencies?** Every line — including the base64 codec — is in-tree
+  and testable, which is the whole point of a tool you use to understand *other*
+  systems. Clippy runs `-D warnings`; the Go build is race-tested in CI.
+
+---
+
+## Comparison
+
+Rough positioning — portsmith is intentionally narrow.
+
+| Capability | **portsmith** | tcpdump / Wireshark | mitmproxy | Custom scripts |
+|---|:--:|:--:|:--:|:--:|
+| Capture live TCP traffic | ✅ app-level proxy | ✅ packet-level | ✅ HTTP(S) focus | ⚠️ you build it |
+| Human-readable, greppable trace | ✅ base64 text | ⚠️ pcap (binary) | ⚠️ flows/pcap | ⚠️ varies |
+| Protocol-agnostic (no dissectors) | ✅ | ⚠️ needs dissector | ❌ HTTP-centric | ⚠️ varies |
+| Heuristic schema inference | ✅ text/binary, framing, tokens | ❌ | ❌ | ❌ |
+| Replay requests to a live target | ✅ with optional timing | ❌ | ⚠️ limited | ⚠️ varies |
+| Zero third-party dependencies | ✅ | ❌ | ❌ | ⚠️ varies |
+| Scope | line-oriented req/resp | all packets | web traffic | anything |
+
+If you need TLS interception, packet-level analysis, or rich dissectors, reach
+for the specialized tools above. If you need to *understand and re-drive* a
+line-oriented TCP protocol with something you can read end-to-end, that is
+portsmith.
+
+---
+
+## Limitations
+
+Being honest about the edges of the v1 toolchain:
+
+- **Line/request-response oriented.** Normalization and inference assume text with
+  framing discernible from terminators. Streaming, multiplexed, or length-prefixed
+  binary protocols infer as `binary` with `terminator: none` and limited tokens.
+- **Inference is heuristic.** The 90%/80% printable thresholds, terminator voting,
+  and leading-token extraction describe a corpus; they do not prove a grammar.
+- **Replay is stateless per request.** It writes a request and reads what returns
+  within the wait window; it does not model correlation, sequence numbers, auth
+  handshakes, or adaptive framing, and does not diff responses automatically.
+- **`normalize` synthesizes timing** from `-start`/`-step`; only `capture` records
+  real wall-clock nanos.
+- **`capture` emits one record per TCP read** — a record boundary is a read
+  boundary, not necessarily a protocol message boundary.
+- **No TLS, no UDP.** Plain TCP only.
+
+---
+
+## Troubleshooting
+
+| Symptom | Likely cause &amp; fix |
+|---|---|
+| `trace: line N: expected 7 fields, got M` | Line was hand-edited or truncated. Records are exactly 7 space-separated fields; the payload must be space-free base64. |
+| `trace: line N: length mismatch: declared X, decoded Y` | `len` disagrees with the decoded payload — truncation or a bad edit. Re-generate the record; do not hand-tweak `len`. |
+| `trace: line N: invalid base64 payload` | Payload is not *standard* base64 (`+`/`/`, `=` padding). URL-safe base64 is not accepted. |
+| `trace: line N: unknown record version "V2"` | Trace is from a newer format revision; use a matching tool version. |
+| `replay: -target is required` | Pass `-target HOST:PORT`. |
+| `[sess] ERROR connect HOST:PORT: ...` | Target unreachable/refusing. The run continues and exits non-zero. |
+| Replay responses look empty/truncated | Server was slower than the read window. Raise `-wait` and/or `-timeout`. |
+| `capture` records nothing | No client traversed the proxy. Point your client at `-listen`, not the upstream. |
+| `infer` shows `binary` for expected text | Payloads fall below the 90% printable threshold, or too few samples. |
+| `cat`/`stats` print nothing | Empty trace or all comments/blanks. Confirm records start with `V1 `. |
+
+---
+
+## Repository layout
+
+```
+portsmith/
+├── go/                  portcap (module github.com/portsmith/portcap)
+│   ├── cmd/portcap/     CLI: capture · normalize · stats · version
+│   └── internal/        trace codec (+tests) · TCP proxy · normalize+stats
+├── rust/                portsmith-replay
+│   ├── src/             trace.rs (codec + in-tree base64) · schema.rs · replay.rs · main.rs
+│   └── tests/           integration tests (base64 KAT, parsing, inference)
+├── samples/             redis.log, http.log + generated *.trace files
+├── docs/
+│   ├── FORMAT.md        authoritative trace format spec
+│   └── assets/          animated SVG diagrams for this README
+├── Makefile             build · test · fmt · vet · demo · clean
+├── CHANGELOG.md
+└── .github/workflows/   CI: Go · Rust · cross-language interop
+```
+
+---
+
+## Roadmap
+
+Directions under consideration (not yet implemented — see [Limitations](#limitations)
+for what v1 does today):
+
+- Response diffing in `replay` (compare live responses against recorded ones).
+- Length-prefixed / delimiter-configurable framing hints for inference.
+- Additional protocol hints and richer token analysis (e.g. header/verb pairs).
+- A `V2` trace revision if framing metadata proves worth the redundancy.
+
+Contributions that keep the "standard-library-only, readable end-to-end" spirit
+are welcome.
+
+---
+
+## License
+
+MIT — see [`LICENSE`](LICENSE).
+
+<p align="center"><sub>portsmith · clip the probe, read the waveform, chart the schema, replay the signal.</sub></p>
+
+---
+
+## Milestones
+
+- [x] **v0.1** - capture + normalize pipeline for line-based traffic (2018)
+- [x] **v0.2** - shared trace schema, first Rust replay prototype (2020)
+- [x] **v0.3** - schema inference, canonical timestamps (2021)
+- [x] **v0.4** - replay diff mode with CI-stable exit codes (2022)
+- [x] **v0.5** - Go capture proxy, RESP/Redis rules (2024)
+- [x] **v0.6** - deterministic inference, per-direction byte accounting (2025)
+- [x] **v1.0** - frozen trace format v1, byte-stable replay across both toolchains (2026)
+- [ ] **v1.1** - TLS-aware capture mode (in progress)
+
+All milestones through v1.0 are shipped and verified by `make test` on both
+toolchains. Everything currently open lives under the [Unreleased] heading in
+the [CHANGELOG](CHANGELOG.md).
+
+---
+
+## License
+
+MIT - see [LICENSE](LICENSE).
+
+# draft note 2
