@@ -39,3 +39,44 @@ first six spaces (`splitn(7)`).
 | `proto`     | token   | Protocol hint: `tcp`, `http`, `redis`, `raw`, …                |
 | `len`       | int     | Decimal byte length of the **decoded** payload.                |
 | `payload`   | base64  | Standard base64 (`+`/`/`, `=` padding) of the raw bytes.       |
+
+### Validation rules
+
+A decoder MUST reject a record when:
+
+* the line does not split into exactly 7 fields;
+* the version is not `V1`;
+* `ts_nanos` is not a valid int64;
+* `dir` is neither `>` nor `<`;
+* `len` is not a valid non-negative integer;
+* the payload is not valid standard base64;
+* the decoded payload length does not equal `len`.
+
+The `len` field is redundant with the base64 payload on purpose: it lets a reader
+cheaply detect truncation or corruption before allocating.
+
+## Example
+
+```
+#portsmith-trace v1
+V1 1700000000000000000 > a1b2c3 redis 5 UElORwo=
+V1 1700000000050000000 < a1b2c3 redis 6 K1BPTkcK
+```
+
+Decoded:
+
+```
+[a1b2c3] request  redis  "PING\n"
+[a1b2c3] response redis  "+PONG\n"
+```
+
+## Design notes
+
+* **Why base64?** Payloads are arbitrary bytes (binary protocols, embedded NULs).
+  Base64 keeps every record on a single line and ASCII-clean.
+* **Why a redundant length?** Cheap integrity check and forward-compatible framing.
+* **Why nanoseconds?** High-resolution ordering and faithful timing replay.
+* **Forward compatibility:** future revisions will use a new version tag
+  (`V2`, …). Decoders reject unknown versions rather than guessing.
+
+# draft note 7
