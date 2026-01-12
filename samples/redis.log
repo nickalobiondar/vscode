@@ -4,3 +4,8 @@
 < +PONG
 > SET key1 hi
 < +OK
+> GET key1
+< $2
+< hi
+
+# draft note 5
