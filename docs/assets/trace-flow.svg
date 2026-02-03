@@ -86,3 +86,74 @@
   <g transform="translate(400,292)" font-size="9.5" fill="#7fa6c0">
     <text x="14" y="0"><tspan fill="#ff8a3d">V1</tspan> = version &#160; ts_nanos &#160; <tspan fill="#3ff0e0">dir</tspan> &#160; session &#160; proto &#160; len &#160; <tspan fill="#e8fbff">base64(payload)</tspan> &#160; &#8212; split on first 6 spaces</text>
   </g>
+
+  <!-- infer arrow (orange) -->
+  <g font-size="11" fill="#ff8a3d">
+    <line x1="842" y1="190" x2="922" y2="190" stroke="#ff8a3d" stroke-width="1.6" marker-end="url(#arrowo)"/>
+    <text x="882" y="180" text-anchor="middle">infer</text>
+    <circle cx="842" cy="190" r="3" fill="#ff8a3d">
+      <animate attributeName="cx" values="842;918;842" dur="2.4s" begin="0.6s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1;0.2;1" dur="2.4s" begin="0.6s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <!-- ============ STAGE 3: inferred schema ============ -->
+  <g transform="translate(930,100)">
+    <rect width="230" height="180" rx="8" fill="#0b1a2c" stroke="#3a2a18"/>
+    <rect width="230" height="26" rx="8" fill="#2a1c0e"/>
+    <text x="14" y="18" font-size="12" fill="#ff8a3d">schema report</text>
+    <g font-size="11" fill="#ffcfa6">
+      <text x="14" y="48" fill="#ff8a3d">[redis request]</text>
+      <text x="14" y="66">samples : 3</text>
+      <text x="14" y="84">encoding : <tspan fill="#e8fbff">text</tspan></text>
+      <text x="14" y="102">terminator : <tspan fill="#e8fbff">LF</tspan></text>
+      <text x="14" y="120">len min=5 max=12</text>
+      <text x="14" y="138" fill="#3ff0e0">tokens:</text>
+      <text x="14" y="156" fill="#e8fbff">GET&#160;1 &#160;PING&#160;1 &#160;SET&#160;1</text>
+    </g>
+  </g>
+
+  <!-- ============ STAGE 4: replay terminal ============ -->
+  <g transform="translate(40,350)">
+    <rect width="1120" height="240" rx="10" fill="#07101d" stroke="#1d4b6e"/>
+    <rect width="1120" height="30" rx="10" fill="#0f2438"/>
+    <circle cx="22" cy="15" r="5" fill="#ff5f56"/>
+    <circle cx="42" cy="15" r="5" fill="#ffbd2e"/>
+    <circle cx="62" cy="15" r="5" fill="#27c93f"/>
+    <text x="560" y="19" text-anchor="middle" font-size="11" fill="#7fa6c0">portsmith-replay &#183; replay engine</text>
+
+    <g font-size="13" font-family="ui-monospace, monospace">
+      <text x="20" y="62" fill="#3ff0e0">$ <tspan fill="#e8fbff">portsmith-replay replay -in samples/redis.trace -target 127.0.0.1:6379</tspan></text>
+
+      <g opacity="0">
+        <text x="20" y="90" fill="#8fb8cf">[a1b2c3] 5 bytes -&gt; 5 bytes | <tspan fill="#ff8a3d">+PONG\r\n</tspan></text>
+        <animate attributeName="opacity" values="0;0;1;1;1;1" dur="4.5s" repeatCount="indefinite"/>
+      </g>
+      <g opacity="0">
+        <text x="20" y="116" fill="#8fb8cf">[a1b2c3] 12 bytes -&gt; 5 bytes | <tspan fill="#ff8a3d">+OK\r\n</tspan></text>
+        <animate attributeName="opacity" values="0;0;0;1;1;1" dur="4.5s" repeatCount="indefinite"/>
+      </g>
+      <g opacity="0">
+        <text x="20" y="142" fill="#8fb8cf">[a1b2c3] 9 bytes -&gt; 9 bytes | <tspan fill="#ff8a3d">$2\r\nhi\r\n</tspan></text>
+        <animate attributeName="opacity" values="0;0;0;0;1;1" dur="4.5s" repeatCount="indefinite"/>
+      </g>
+      <g opacity="0">
+        <text x="20" y="176" fill="#3ff0e0">replayed 3 request(s), 0 error(s), sent 26 byte(s), received 19 byte(s)</text>
+        <animate attributeName="opacity" values="0;0;0;0;0;1" dur="4.5s" repeatCount="indefinite"/>
+      </g>
+
+      <!-- blinking cursor -->
+      <rect x="20" y="196" width="9" height="15" fill="#3ff0e0">
+        <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>
+      </rect>
+      <text x="34" y="209" fill="#546b80" font-size="12">TCP &#8226; connect once per session &#8226; bounded read window</text>
+    </g>
+  </g>
+
+  <!-- connective wire from schema down to replay -->
+  <path d="M1045,280 C1045,320 600,320 600,348" fill="none" stroke="url(#wire)" stroke-width="1.5" stroke-dasharray="4 5" opacity="0.6">
+    <animate attributeName="stroke-dashoffset" values="0;-90" dur="2.5s" repeatCount="indefinite"/>
+  </path>
+</svg>
+
+# draft note 9
