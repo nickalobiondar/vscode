@@ -12,3 +12,13 @@ Thanks for looking at Portsmith. Two cooperating tools share one trace format:
 - Determinism: `replay` and `infer` output is byte-stable for identical input.
   No wall-clock, no map iteration order in rendered output.
 - `make test` must stay green on both toolchains; `gofmt`, `rustfmt` and
+  `clippy` must be clean.
+
+## Workflow
+
+1. Fork, create a topic branch.
+2. `make build && make test`.
+3. `make demo` regenerates the sample traces - include the diff if formats change.
+4. Conventional commits (`feat:`, `fix:`, `docs:`, `test:`, `chore:`).
+
+# draft note 11
