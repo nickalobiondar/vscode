@@ -115,3 +115,30 @@ func (p *Proxy) pump(src io.Reader, dst io.Writer, session string, dir trace.Dir
 				Session:        session,
 				Proto:          p.Proto,
 				Payload:        chunk,
+			})
+			if _, werr := dst.Write(chunk); werr != nil {
+				return
+			}
+		}
+		if err != nil {
+			return
+		}
+	}
+}
+
+func (p *Proxy) record(r trace.Record) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	if err := p.writer.Write(r); err == nil {
+		_ = p.writer.Flush()
+	}
+}
+
+func newSessionID() string {
+	var b [6]byte
+	if _, err := rand.Read(b[:]); err != nil {
+		// Fall back to a time-derived id; still unique enough for a trace.
+		return fmt.Sprintf("%012x", time.Now().UnixNano())
+	}
+	return hex.EncodeToString(b[:])
+}
