@@ -118,3 +118,31 @@ func Compute(tr *trace.Reader) (Stats, error) {
 		}
 	}
 	s.Sessions = len(sessions)
+	if s.FirstNanos < 0 {
+		s.FirstNanos = 0
+	}
+	return s, nil
+}
+
+// SortedProtos returns proto keys in descending count order for stable output.
+func (s Stats) SortedProtos() []string {
+	keys := make([]string, 0, len(s.ByProto))
+	for k := range s.ByProto {
+		keys = append(keys, k)
+	}
+	sort.Slice(keys, func(i, j int) bool {
+		if s.ByProto[keys[i]] != s.ByProto[keys[j]] {
+			return s.ByProto[keys[i]] > s.ByProto[keys[j]]
+		}
+		return keys[i] < keys[j]
+	})
+	return keys
+}
+
+// Duration returns the wall-clock span covered by the trace.
+func (s Stats) Duration() time.Duration {
+	if s.Records == 0 {
+		return 0
+	}
+	return time.Duration(s.LastNanos - s.FirstNanos)
+}
