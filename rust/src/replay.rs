@@ -164,4 +164,4 @@ fn read_response(stream: &mut TcpStream, max_wait: Duration) -> Vec<u8> {
         }
     }
     out
-// review note: diff exit codes are a contract
+}
