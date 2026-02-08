@@ -207,4 +207,4 @@ impl Schema {
         }
         out
     }
-// review note: inference output stays sorted
+}
