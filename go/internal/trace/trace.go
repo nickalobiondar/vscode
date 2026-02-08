@@ -145,3 +145,32 @@ func (tw *Writer) Write(r Record) error {
 
 // Flush flushes buffered data.
 func (tw *Writer) Flush() error { return tw.w.Flush() }
+
+// Reader streams records from an io.Reader, skipping comments and blank lines.
+type Reader struct {
+	sc     *bufio.Scanner
+	lineNo int
+}
+
+// NewReader returns a Reader over r. It supports lines up to 16 MiB.
+func NewReader(r io.Reader) *Reader {
+	sc := bufio.NewScanner(r)
+	sc.Buffer(make([]byte, 0, 64*1024), 16*1024*1024)
+	return &Reader{sc: sc}
+}
+
+// Next returns the next record. It returns io.EOF when the stream is exhausted.
+func (tr *Reader) Next() (Record, error) {
+	for tr.sc.Scan() {
+		tr.lineNo++
+		line := strings.TrimRight(tr.sc.Text(), "\r")
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+		return DecodeLine(line, tr.lineNo)
+	}
+	if err := tr.sc.Err(); err != nil {
+		return Record{}, err
+	}
+	return Record{}, io.EOF
+}
