@@ -8,3 +8,12 @@ labels: enhancement
 
 <!-- what can you not do today? -->
 
+**Proposed behavior**
+
+<!-- concrete and deterministic; trace format changes must stay additive -->
+
+**Alternatives considered**
+
+<!-- other approaches you thought about -->
+
+# draft note 14
