@@ -12,3 +12,13 @@ labels: bug
 
 ```
 make demo
+# or a minimal capture/trace pair
+```
+
+**Environment**
+
+- portsmith version (`make vet` prints toolchains):
+- Go version / Rust version:
+- OS:
+
+# draft note 12
