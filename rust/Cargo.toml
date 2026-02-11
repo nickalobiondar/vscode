@@ -9,3 +9,12 @@ license = "MIT"
 name = "portsmith-replay"
 path = "src/main.rs"
 
+[lib]
+name = "portsmith_replay"
+path = "src/lib.rs"
+
+[profile.release]
+opt-level = 3
+lto = true
+
+# draft note 19
