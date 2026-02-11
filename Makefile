@@ -33,3 +33,19 @@ test-rust:
 fmt:
 	cd $(GO_DIR) && go fmt ./...
 	cd $(RUST_DIR) && cargo fmt
+
+vet:
+	cd $(GO_DIR) && go vet ./...
+	cd $(RUST_DIR) && cargo check
+
+demo:
+	cd $(GO_DIR) && go run ./cmd/portcap normalize -in ../samples/redis.log \
+		-proto redis -session a1b2c3 -start 1700000000000000000 -step 50000000 \
+		-out ../samples/redis.trace
+	cd $(RUST_DIR) && cargo run --quiet -- infer -in ../samples/redis.trace
+
+clean:
+	rm -rf $(BIN_DIR)
+	cd $(RUST_DIR) && cargo clean
+
+# draft note 18
