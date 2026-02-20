@@ -21,4 +21,4 @@ make demo
 - Go version / Rust version:
 - OS:
 
-# draft note 12
+# draft note 31
