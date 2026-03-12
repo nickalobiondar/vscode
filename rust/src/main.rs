@@ -197,4 +197,6 @@ fn preview(data: &[u8]) -> String {
         s.push_str("...");
     }
     s
-// review note: keep CLI flags additive
+}
+
+// draft note 8
