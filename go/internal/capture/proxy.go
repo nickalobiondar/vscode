@@ -142,3 +142,5 @@ func newSessionID() string {
 	}
 	return hex.EncodeToString(b[:])
 }
+
+// draft note 9
