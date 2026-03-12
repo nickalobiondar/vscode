@@ -154,3 +154,33 @@ func cmdStats(args []string) error {
 	fmt.Printf("sessions:  %d\n", s.Sessions)
 	fmt.Printf("bytes:     %d\n", s.TotalBytes)
 	fmt.Printf("duration:  %s\n", s.Duration())
+	fmt.Println("protocols:")
+	for _, k := range s.SortedProtos() {
+		fmt.Printf("  %-8s %d\n", k, s.ByProto[k])
+	}
+	return nil
+}
+
+func openIn(path string) (io.Reader, func(), error) {
+	if path == "-" || path == "" {
+		return os.Stdin, func() {}, nil
+	}
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, nil, err
+	}
+	return f, func() { f.Close() }, nil
+}
+
+func openOut(path string) (io.Writer, func(), error) {
+	if path == "-" || path == "" {
+		return os.Stdout, func() {}, nil
+	}
+	f, err := os.Create(path)
+	if err != nil {
+		return nil, nil, err
+	}
+	return f, func() { f.Close() }, nil
+}
+
+// draft note 7
