@@ -67,3 +67,5 @@ func TestDecodeLineErrors(t *testing.T) {
 		}
 	}
 }
+
+// draft note 12
