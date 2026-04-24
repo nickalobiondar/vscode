@@ -48,4 +48,4 @@ clean:
 	rm -rf $(BIN_DIR)
 	cd $(RUST_DIR) && cargo clean
 
-# draft note 18
+# draft note 29
