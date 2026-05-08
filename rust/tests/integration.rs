@@ -94,4 +94,4 @@ fn infer_detects_binary() {
     assert_eq!(schema.groups[0].encoding, Encoding::Binary);
 }
 
-// draft note 13
+// draft note 43
