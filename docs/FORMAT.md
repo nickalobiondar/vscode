@@ -79,4 +79,4 @@ Decoded:
 * **Forward compatibility:** future revisions will use a new version tag
   (`V2`, …). Decoders reject unknown versions rather than guessing.
 
-# draft note 18
+# draft note 48
