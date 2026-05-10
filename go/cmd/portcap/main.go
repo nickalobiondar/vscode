@@ -182,5 +182,3 @@ func openOut(path string) (io.Writer, func(), error) {
 	}
 	return f, func() { f.Close() }, nil
 }
-
-// draft note 37
