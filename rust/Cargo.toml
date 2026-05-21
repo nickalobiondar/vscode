@@ -17,4 +17,4 @@ path = "src/lib.rs"
 opt-level = 3
 lto = true
 
-# draft note 30
+# draft note 60
