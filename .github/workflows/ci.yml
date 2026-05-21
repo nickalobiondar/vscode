@@ -63,4 +63,4 @@ jobs:
             -out ../samples/roundtrip.trace
           cd ../rust && cargo run --quiet -- infer -in ../samples/roundtrip.trace
 
-# draft note 28
+# draft note 58
