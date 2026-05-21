@@ -14,4 +14,4 @@
 
 <!-- replay/infer output is byte-stable: include before/after on samples/ if behavior changed -->
 
-# draft note 26
+# draft note 56
