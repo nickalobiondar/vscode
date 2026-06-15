@@ -147,4 +147,4 @@ func (s Stats) Duration() time.Duration {
 	return time.Duration(s.LastNanos - s.FirstNanos)
 }
 
-// draft note 40
+// draft note 70
