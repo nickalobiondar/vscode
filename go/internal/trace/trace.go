@@ -175,4 +175,4 @@ func (tr *Reader) Next() (Record, error) {
 	return Record{}, io.EOF
 }
 
-// draft note 41
+// draft note 71
