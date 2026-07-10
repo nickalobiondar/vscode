@@ -58,5 +58,3 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - initial public release
 - capture + normalize pipeline for line-based traffic
-
-# draft note 61
