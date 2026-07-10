@@ -78,5 +78,3 @@ Decoded:
 * **Why nanoseconds?** High-resolution ordering and faithful timing replay.
 * **Forward compatibility:** future revisions will use a new version tag
   (`V2`, …). Decoders reject unknown versions rather than guessing.
-
-# draft note 78
