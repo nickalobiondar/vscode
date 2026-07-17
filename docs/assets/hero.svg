@@ -130,3 +130,5 @@
     <circle cx="245" cy="-4" r="3" fill="#ff8a3d"><animate attributeName="opacity" values="1;0.2;1" dur="1.4s" repeatCount="indefinite"/></circle>
   </g>
 </svg>
+
+# draft note 79
