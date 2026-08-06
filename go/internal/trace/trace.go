@@ -174,5 +174,3 @@ func (tr *Reader) Next() (Record, error) {
 	}
 	return Record{}, io.EOF
 }
-
-// draft note 71

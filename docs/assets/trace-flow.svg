@@ -155,5 +155,3 @@
     <animate attributeName="stroke-dashoffset" values="0;-90" dur="2.5s" repeatCount="indefinite"/>
   </path>
 </svg>
-
-# draft note 80

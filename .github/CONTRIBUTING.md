@@ -20,5 +20,3 @@ Thanks for looking at Portsmith. Two cooperating tools share one trace format:
 2. `make build && make test`.
 3. `make demo` regenerates the sample traces - include the diff if formats change.
 4. Conventional commits (`feat:`, `fix:`, `docs:`, `test:`, `chore:`).
-
-# draft note 82

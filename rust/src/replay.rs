@@ -165,5 +165,3 @@ fn read_response(stream: &mut TcpStream, max_wait: Duration) -> Vec<u8> {
     }
     out
 }
-
-// draft note 66

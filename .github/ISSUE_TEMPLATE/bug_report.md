@@ -20,5 +20,3 @@ make demo
 - portsmith version (`make vet` prints toolchains):
 - Go version / Rust version:
 - OS:
-
-# draft note 83

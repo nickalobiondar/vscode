@@ -208,5 +208,3 @@ impl Schema {
         out
     }
 }
-
-// draft note 63

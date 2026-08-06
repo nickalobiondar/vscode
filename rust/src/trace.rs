@@ -185,5 +185,3 @@ pub fn base64_decode(s: &str) -> Result<Vec<u8>, String> {
     }
     Ok(out)
 }
-
-// draft note 64

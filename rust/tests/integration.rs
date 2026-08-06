@@ -93,5 +93,3 @@ fn infer_detects_binary() {
     let schema = infer(&recs);
     assert_eq!(schema.groups[0].encoding, Encoding::Binary);
 }
-
-// draft note 73
