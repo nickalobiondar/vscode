@@ -578,5 +578,3 @@ the [CHANGELOG](CHANGELOG.md).
 ## License
 
 MIT - see [LICENSE](LICENSE).
-
-# draft note 62
